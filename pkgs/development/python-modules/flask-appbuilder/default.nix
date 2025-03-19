@@ -27,7 +27,7 @@
 
 buildPythonPackage rec {
   pname = "flask-appbuilder";
-  version = "4.6.1";
+  version = "4.6.0";
   format = "setuptools";
 
   disabled = pythonOlder "3.7";
