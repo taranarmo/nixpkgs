@@ -3,15 +3,30 @@
   stdenv,
   python,
   buildPythonPackage,
+  buildPythonApplication,
   fetchFromGitHub,
+  hatchling,
+  gitpython,
+  gitdb,
+  packaging,
+  pathspec,
+  pluggy,
+  smmap,
+  tomli,
+  trove-classifiers,
+
+  setproctitle,
+  pygments,
+  pendulum,
+
   alembic,
   argcomplete,
   asgiref,
   attrs,
   blinker,
-  cached-property,
-  cattrs,
-  clickclick,
+  # cached-property,
+  # cattrs,
+  # clickclick,
   colorlog,
   configupdater,
   connexion,
@@ -21,73 +36,78 @@
   deprecated,
   dill,
   flask,
-  flask-login,
-  flask-appbuilder,
+  # flask-login,
+  # flask-appbuilder,
   flask-caching,
   flask-session,
   flask-wtf,
-  gitpython,
+  fsspec,
+  # gitpython,
   google-re2,
-  graphviz,
+  # graphviz,
   gunicorn,
   httpx,
-  iso8601,
-  importlib-resources,
+  # iso8601,
+  # importlib-resources,
   importlib-metadata,
-  inflection,
+  # inflection,
   itsdangerous,
   jinja2,
   jsonschema,
   lazy-object-proxy,
   linkify-it-py,
   lockfile,
-  markdown,
+  # markdown,
+  markdown-it-py,
   markupsafe,
   marshmallow-oneofschema,
   mdit-py-plugins,
-  numpy,
-  openapi-spec-validator,
+  methodtools,
+  # numpy,
+  # openapi-spec-validator,
   opentelemetry-api,
   opentelemetry-exporter-otlp,
-  pandas,
-  pathspec,
-  pendulum,
+  # pandas,
+  # pathspec,
+  # pendulum,
   psutil,
-  pydantic,
-  pygments,
+  # pydantic,
+  # pygments,
   pyjwt,
   python-daemon,
   python-dateutil,
   python-nvd3,
   python-slugify,
-  python3-openid,
+  # python3-openid,
   pythonOlder,
-  pyyaml,
+  # pyyaml,
+  requests,
+  requests-toolbelt,
+  rfc3339-validator,
   rich,
   rich-argparse,
-  setproctitle,
+  # setproctitle,
   sqlalchemy,
   sqlalchemy-jsonfield,
-  swagger-ui-bundle,
+  # swagger-ui-bundle,
   tabulate,
   tenacity,
   termcolor,
-  typing-extensions,
-  unicodecsv,
+  # typing-extensions,
+  # unicodecsv,
+  universal-pathlib,
   werkzeug,
-  freezegun,
-  pytest-asyncio,
-  pytestCheckHook,
-  time-machine,
-  mkYarnPackage,
-  fetchYarnDeps,
+  # freezegun,
+  # pytest-asyncio,
+  # pytestCheckHook,
+  # time-machine,
   writeScript,
 
   # Extra airflow providers to enable
   enabledProviders ? [ ],
 }:
 let
-  version = "2.7.3";
+  version = "2.10.5";
 
   airflow-src = fetchFromGitHub {
     owner = "apache";
@@ -96,45 +116,11 @@ let
     # Download using the git protocol rather than using tarballs, because the
     # GitHub archive tarballs don't appear to include tests
     forceFetchGit = true;
-    hash = "sha256-+YbiKFZLigSDbHPaUKIl97kpezW1rIt/j09MMa6lwhQ=";
+    hash = "sha256-q5/CM+puXE31+15F3yZmcrR74LrqHppdCDUqjLQXPfk=";
   };
 
   # airflow bundles a web interface, which is built using webpack by an undocumented shell script in airflow's source tree.
   # This replicates this shell script, fixing bugs in yarn.lock and package.json
-
-  airflow-frontend = mkYarnPackage rec {
-    name = "airflow-frontend";
-
-    src = "${airflow-src}/airflow/www";
-    packageJSON = ./package.json;
-
-    offlineCache = fetchYarnDeps {
-      yarnLock = "${src}/yarn.lock";
-      hash = "sha256-WQKuQgNp35fU6z7owequXOSwoUGJDJYcUgkjPDMOops=";
-    };
-
-    distPhase = "true";
-
-    # The webpack license plugin tries to create /licenses when given the
-    # original relative path
-    postPatch = ''
-      sed -i 's!../../../../licenses/LICENSES-ui.txt!licenses/LICENSES-ui.txt!' webpack.config.js
-    '';
-
-    configurePhase = ''
-      cp -r $node_modules node_modules
-    '';
-
-    buildPhase = ''
-      yarn --offline build
-      find package.json yarn.lock static/css static/js -type f | sort | xargs md5sum > static/dist/sum.md5
-    '';
-
-    installPhase = ''
-      mkdir -p $out/static/
-      cp -r static/dist $out/static
-    '';
-  };
 
   # Import generated file with metadata for provider dependencies and imports.
   # Enable additional providers using enabledProviders above.
@@ -144,23 +130,32 @@ let
   providerDependencies = lib.concatMap getProviderDeps enabledProviders;
   providerImports = lib.concatMap getProviderImports enabledProviders;
 in
-buildPythonPackage rec {
+buildPythonApplication rec {
   pname = "apache-airflow";
   inherit version;
   src = airflow-src;
+  pyproject=true;
+
+  nativeBuildInputs = [ python.pkgs.hatchling ];
 
   disabled = pythonOlder "3.7";
 
   propagatedBuildInputs =
     [
+      gitpython
+      gitdb
+      packaging
+      pathspec
+      pluggy
+      smmap
+      tomli
+      trove-classifiers
+
       alembic
       argcomplete
       asgiref
       attrs
       blinker
-      cached-property
-      cattrs
-      clickclick
       colorlog
       configupdater
       connexion
@@ -169,75 +164,130 @@ buildPythonPackage rec {
       cryptography
       deprecated
       dill
-      flask
-      flask-appbuilder
       flask-caching
       flask-session
       flask-wtf
-      flask-login
-      gitpython
+      flask
+      fsspec
       google-re2
-      graphviz
       gunicorn
       httpx
-      iso8601
-      importlib-resources
-      inflection
       itsdangerous
       jinja2
       jsonschema
       lazy-object-proxy
       linkify-it-py
       lockfile
-      markdown
+      markdown-it-py
       markupsafe
       marshmallow-oneofschema
       mdit-py-plugins
-      numpy
-      openapi-spec-validator
+      methodtools
       opentelemetry-api
       opentelemetry-exporter-otlp
-      pandas
-      pathspec
       pendulum
       psutil
-      pydantic
       pygments
       pyjwt
       python-daemon
       python-dateutil
       python-nvd3
       python-slugify
-      python3-openid
-      pyyaml
-      rich
+      requests
+      requests-toolbelt
+      rfc3339-validator
       rich-argparse
+      rich
       setproctitle
       sqlalchemy
       sqlalchemy-jsonfield
-      swagger-ui-bundle
       tabulate
       tenacity
       termcolor
-      typing-extensions
-      unicodecsv
+      universal-pathlib
       werkzeug
+
+ #     alembic
+ #     argcomplete
+ #     asgiref
+ #     attrs
+ #     blinker
+ #     cached-property
+ #     cattrs
+ #     clickclick
+ #     colorlog
+ #     configupdater
+ #     connexion
+ #     cron-descriptor
+ #     croniter
+ #     cryptography
+ #     deprecated
+ #     dill
+ #     flask
+ #     flask-appbuilder
+ #     flask-caching
+ #     flask-session
+ #     flask-wtf
+ #     flask-login
+ #     gitpython
+ #     google-re2
+ #     graphviz
+ #     gunicorn
+ #     httpx
+ #     iso8601
+ #     importlib-resources
+ #     inflection
+ #     itsdangerous
+ #     jinja2
+ #     jsonschema
+ #     lazy-object-proxy
+ #     linkify-it-py
+ #     lockfile
+ #     markdown
+ #     markupsafe
+ #     marshmallow-oneofschema
+ #     mdit-py-plugins
+ #     numpy
+ #     openapi-spec-validator
+ #     opentelemetry-api
+ #     opentelemetry-exporter-otlp
+ #     pandas
+ #     pathspec
+ #     pendulum
+ #     psutil
+ #     pydantic
+ #     pygments
+ #     pyjwt
+ #     python-daemon
+ #     python-dateutil
+ #     python-nvd3
+ #     python-slugify
+ #     python3-openid
+ #     pyyaml
+ #     rich
+ #     rich-argparse
+ #     setproctitle
+ #     sqlalchemy
+ #     sqlalchemy-jsonfield
+ #     swagger-ui-bundle
+ #     tabulate
+ #     tenacity
+ #     termcolor
+ #     typing-extensions
+ #     unicodecsv
+ #     werkzeug
     ]
     ++ lib.optionals (pythonOlder "3.9") [
       importlib-metadata
     ]
     ++ providerDependencies;
 
-  buildInputs = [
-    airflow-frontend
-  ];
-
-  nativeCheckInputs = [
-    freezegun
-    pytest-asyncio
-    pytestCheckHook
-    time-machine
-  ];
+  #nativeCheckInputs = [
+  #  freezegun
+  #  pytest-asyncio
+  #  pytestCheckHook
+  #  time-machine
+  #];
 
   # By default, source code of providers is included but unusable due to missing
   # transitive dependencies. To enable a provider, add it to extraProviders
@@ -246,14 +296,11 @@ buildPythonPackage rec {
 
   postPatch =
     ''
-      # https://github.com/apache/airflow/issues/33854
-      substituteInPlace pyproject.toml \
-        --replace '[project]' $'[project]\nname = "apache-airflow"\nversion = "${version}"'
     ''
     + lib.optionalString stdenv.hostPlatform.isDarwin ''
       # Fix failing test on Hydra
       substituteInPlace airflow/utils/db.py \
-        --replace "/tmp/sqlite_default.db" "$TMPDIR/sqlite_default.db"
+        --replace-fail "/tmp/sqlite_default.db" "$TMPDIR/sqlite_default.db"
     '';
 
   pythonRelaxDeps = [
@@ -261,6 +308,7 @@ buildPythonPackage rec {
     "flask-appbuilder"
     "opentelemetry-api"
     "pathspec"
+    "trove-classifiers"
   ];
 
   # allow for gunicorn processes to have access to Python packages
@@ -268,8 +316,8 @@ buildPythonPackage rec {
     "--prefix PYTHONPATH : $PYTHONPATH"
   ];
 
+    #cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
   postInstall = ''
-    cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
     # Needed for pythonImportsCheck below
     export HOME=$(mktemp -d)
   '';
@@ -300,20 +348,20 @@ buildPythonPackage rec {
   # Updates yarn.lock and package.json
   passthru.updateScript = writeScript "update.sh" ''
     #!/usr/bin/env nix-shell
-    #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
+  #  #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
 
     set -euo pipefail
 
-    # Get new version
+  #  # Get new version
     new_version="$(curl -s https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html |
       pcregrep -o1 'Airflow ([0-9.]+).' | head -1)"
     update-source-version ${pname} "$new_version"
 
-    # Update frontend
-    cd ./pkgs/servers/apache-airflow
-    curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/yarn.lock
-    curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
-    yarn2nix > yarn.nix
+  #  # Update frontend
+  #  cd ./pkgs/servers/apache-airflow
+  #  curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/yarn.lock
+  #  curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
+  #  yarn2nix > yarn.nix
 
     # update provider dependencies
     ./update-providers.py
@@ -339,10 +387,6 @@ buildPythonPackage rec {
       bhipple
       gbpdt
       ingenieroariel
-    ];
-    knownVulnerabilities = [
-      "CVE-2023-50943"
-      "CVE-2023-50944"
     ];
   };
 }
