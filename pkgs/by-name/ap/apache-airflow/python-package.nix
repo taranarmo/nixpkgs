@@ -1,5 +1,7 @@
 {
   lib,
+  mkYarnPackage,
+  fetchYarnDeps,
   stdenv,
   python,
   buildPythonPackage,
@@ -122,6 +124,62 @@ let
   # airflow bundles a web interface, which is built using webpack by an undocumented shell script in airflow's source tree.
   # This replicates this shell script, fixing bugs in yarn.lock and package.json
 
+  airflow-frontend = mkYarnPackage rec {
+    name = "airflow-frontend";
+
+    src = "${airflow-src}/airflow/www";
+    packageJSON = ./package.json;
+
+    offlineCache = fetchYarnDeps {
+      yarnLock = "${src}/yarn.lock";
+      hash = "sha256-hKgtMH4c8sPRDLPLVn+H8rmwc2Q6ei6U4er6fGuFn4I=";
+    };
+
+    distPhase = "true";
+
+    # The webpack license plugin tries to create /licenses when given the
+    # original relative path
+    postPatch = ''
+      sed -i 's!../../../../licenses/LICENSES-ui.txt!licenses/LICENSES-ui.txt!' webpack.config.js
+    '';
+
+    configurePhase = ''
+      cp -r $node_modules node_modules
+    '';
+
+    buildPhase = ''
+      yarn --offline build
+      find package.json yarn.lock static/css static/js -type f | sort | xargs md5sum > static/dist/sum.md5
+    '';
+
+    installPhase = ''
+      mkdir -p $out/static/
+      cp -r static/dist $out/static
+    '';
+  };
+
+  # getProviderVersion = providerPath: builtins.fromTOML (builtins.readFile "${airflow-src}/airflow/providers/${providerPath}/pyproject.toml").tool.poetry.version;
+
+  # buildProvider = providerPath: buildPythonPackage {
+  #   pname = "apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] providerPath}";
+  #   version = getProviderVersion providerPath;
+  #   src = "${airflow-src}/airflow/providers/${providerPath}";
+  #   pyproject = true;
+  # };
+
+  # apache-airflow-providers-common-compat = buildProvider "common/compat";
+  # apache-airflow-providers-common-io = buildProvider "common/io";
+  # apache-airflow-providers-common-sql = buildProvider "common/sql";
+  # apache-airflow-providers-fab = buildProvider "fab";
+  # apache-airflow-providers-ftp = buildProvider "ftp";
+  # apache-airflow-providers-http = buildProvider "http";
+  # apache-airflow-providers-imap = buildProvider "imap";
+  # apache-airflow-providers-smtp = buildProvider "smtp";
+  # apache-airflow-providers-sqlite = buildProvider "sqlite";
+
+  # airflow bundles a web interface, which is built using webpack by an undocumented shell script in airflow's source tree.
+  # This replicates this shell script, fixing bugs in yarn.lock and package.json
+
   # Import generated file with metadata for provider dependencies and imports.
   # Enable additional providers using enabledProviders above.
   providers = import ./providers.nix;
@@ -138,7 +196,7 @@ buildPythonApplication rec {
 
   nativeBuildInputs = [ python.pkgs.hatchling ];
 
-  disabled = pythonOlder "3.7";
+  disabled = pythonOlder "3.8";
 
   propagatedBuildInputs =
     [
@@ -316,8 +374,8 @@ buildPythonApplication rec {
     "--prefix PYTHONPATH : $PYTHONPATH"
   ];
 
-    #cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
   postInstall = ''
+    #cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
     # Needed for pythonImportsCheck below
     export HOME=$(mktemp -d)
   '';
@@ -348,20 +406,20 @@ buildPythonApplication rec {
   # Updates yarn.lock and package.json
   passthru.updateScript = writeScript "update.sh" ''
     #!/usr/bin/env nix-shell
-  #  #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
+   #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
 
     set -euo pipefail
 
-  #  # Get new version
+   # Get new version
     new_version="$(curl -s https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html |
       pcregrep -o1 'Airflow ([0-9.]+).' | head -1)"
     update-source-version ${pname} "$new_version"
 
-  #  # Update frontend
-  #  cd ./pkgs/servers/apache-airflow
-  #  curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/yarn.lock
-  #  curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
-  #  yarn2nix > yarn.nix
+   # Update frontend
+   cd ./pkgs/servers/apache-airflow
+   curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/yarn.lock
+   curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
+   yarn2nix > yarn.nix
 
     # update provider dependencies
     ./update-providers.py
