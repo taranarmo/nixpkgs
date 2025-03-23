@@ -137,10 +137,10 @@ let
 
     distPhase = "true";
 
-    # The webpack license plugin tries to create /licenses when given the
+    # The webpack license plugin tries to create /3rd-party-licenses when given the
     # original relative path
     postPatch = ''
-      sed -i 's!../../../../licenses/LICENSES-ui.txt!licenses/LICENSES-ui.txt!' webpack.config.js
+      sed -i 's!../../../../3rd-party-licenses/LICENSES-ui.txt!/3rd-party-licenses/LICENSES-ui.txt!' webpack.config.js
     '';
 
     configurePhase = ''
@@ -158,27 +158,33 @@ let
     '';
   };
 
-  # getProviderVersion = providerPath: builtins.fromTOML (builtins.readFile "${airflow-src}/airflow/providers/${providerPath}/pyproject.toml").tool.poetry.version;
+  getProviderVersion = providerPath:
+    let
+      initPy = builtins.readFile "${airflow-src}/airflow/providers/${providerPath}/__init__.py";
+      #versionRegex = builtins.match "^\s*__version__\s*=\s*['\"]([^'\"]*)['\"]" initPy;
+      versionRegex = builtins.match ".*__version__[[:space:]]*=[[:space:]]*[\"']([^\"']+)[\"'].*" initPy;
+    in
+      if versionRegex != null then
+        builtins.elemAt versionRegex 0
+      else
+        builtins.throw "Could not find __version__ in ${airflow-src}/airflow/providers/${providerPath}/__init__.py";
 
-  # buildProvider = providerPath: buildPythonPackage {
-  #   pname = "apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] providerPath}";
-  #   version = getProviderVersion providerPath;
-  #   src = "${airflow-src}/airflow/providers/${providerPath}";
-  #   pyproject = true;
-  # };
+  buildProvider = providerPath: buildPythonPackage {
+    pname = "apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] providerPath}";
+    version = getProviderVersion providerPath;
+    src = "${airflow-src}/airflow/providers/${providerPath}";
+    pyproject = false;
+  };
 
-  # apache-airflow-providers-common-compat = buildProvider "common/compat";
-  # apache-airflow-providers-common-io = buildProvider "common/io";
-  # apache-airflow-providers-common-sql = buildProvider "common/sql";
-  # apache-airflow-providers-fab = buildProvider "fab";
-  # apache-airflow-providers-ftp = buildProvider "ftp";
-  # apache-airflow-providers-http = buildProvider "http";
-  # apache-airflow-providers-imap = buildProvider "imap";
-  # apache-airflow-providers-smtp = buildProvider "smtp";
-  # apache-airflow-providers-sqlite = buildProvider "sqlite";
-
-  # airflow bundles a web interface, which is built using webpack by an undocumented shell script in airflow's source tree.
-  # This replicates this shell script, fixing bugs in yarn.lock and package.json
+  apache-airflow-providers-common-compat = buildProvider "common/compat";
+  apache-airflow-providers-common-io = buildProvider "common/io";
+  apache-airflow-providers-common-sql = buildProvider "common/sql";
+  apache-airflow-providers-fab = buildProvider "fab";
+  apache-airflow-providers-ftp = buildProvider "ftp";
+  apache-airflow-providers-http = buildProvider "http";
+  apache-airflow-providers-imap = buildProvider "imap";
+  apache-airflow-providers-smtp = buildProvider "smtp";
+  apache-airflow-providers-sqlite = buildProvider "sqlite";
 
   # Import generated file with metadata for provider dependencies and imports.
   # Enable additional providers using enabledProviders above.
@@ -198,8 +204,19 @@ buildPythonApplication rec {
 
   disabled = pythonOlder "3.8";
 
+  dontCheckRuntimeDeps = true;
+
   propagatedBuildInputs =
     [
+  apache-airflow-providers-common-compat
+  apache-airflow-providers-common-io
+  apache-airflow-providers-common-sql
+  apache-airflow-providers-fab
+  apache-airflow-providers-ftp
+  apache-airflow-providers-http
+  apache-airflow-providers-imap
+  apache-airflow-providers-smtp
+  apache-airflow-providers-sqlite
       gitpython
       gitdb
       packaging
