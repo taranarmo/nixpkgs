@@ -77,6 +77,17 @@ let
         ];
         doCheck = false;
       });
+      flask-login = pySuper.flask-login.overridePythonAttrs (o: rec {
+        version = "0.6.3";
+        src = fetchFromGitHub {
+          owner = "maxcountryman";
+          repo = "flask-login";
+          rev = "refs/tags/${version}";
+          hash = "sha256-Sn7Ond67P/3+OmKKFE/KfA6FE4IajhiRXVVrXKJtY3I=";
+        };
+        nativeBuildInputs = with pySelf; [ setuptools ];
+        doCheck = false;
+      });
       flask-session = pySuper.flask-session.overridePythonAttrs (o: rec {
         version = "0.5.0";
         src = fetchFromGitHub {
@@ -102,12 +113,12 @@ let
       flask-sqlalchemy = pySuper.flask-sqlalchemy.overridePythonAttrs (o: {
         src = fetchPypi {
           pname = "Flask-SQLAlchemy";
-          version = "3.0.1";
-          hash = "sha256-Cl1YZ3SUmFbk8f6L46ZMWUYVlZ454rBB6Ie6xcdWvEI=";
+          version = "2.5.1";
+          hash = "sha256-K9pEtD58rLFdTgX/PMH4vJeTbMRkYjQkECv8LDXpWRI=";
         };
         nativeBuildInputs = with pySelf; [ pdm-pep517 ];
-        format = "pyproject";
-        #format = "setuptools";
+        format = "setuptools";
+        doCheck = false;
       });
       httpcore = pySuper.httpcore.overridePythonAttrs (o: rec {
         # nullify upstream's pytest flags which cause

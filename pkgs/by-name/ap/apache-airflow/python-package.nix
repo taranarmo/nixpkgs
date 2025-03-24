@@ -39,7 +39,7 @@
   dill,
   flask,
   # flask-login,
-  # flask-appbuilder,
+  flask-appbuilder,
   flask-caching,
   flask-session,
   flask-wtf,
@@ -158,33 +158,33 @@ let
     '';
   };
 
-  getProviderVersion = providerPath:
-    let
-      initPy = builtins.readFile "${airflow-src}/airflow/providers/${providerPath}/__init__.py";
-      #versionRegex = builtins.match "^\s*__version__\s*=\s*['\"]([^'\"]*)['\"]" initPy;
-      versionRegex = builtins.match ".*__version__[[:space:]]*=[[:space:]]*[\"']([^\"']+)[\"'].*" initPy;
-    in
-      if versionRegex != null then
-        builtins.elemAt versionRegex 0
-      else
-        builtins.throw "Could not find __version__ in ${airflow-src}/airflow/providers/${providerPath}/__init__.py";
+  #getProviderVersion = providerPath:
+  #  let
+  #    initPy = builtins.readFile "${airflow-src}/airflow/providers/${providerPath}/__init__.py";
+  #    #versionRegex = builtins.match "^\s*__version__\s*=\s*['\"]([^'\"]*)['\"]" initPy;
+  #    versionRegex = builtins.match ".*__version__[[:space:]]*=[[:space:]]*[\"']([^\"']+)[\"'].*" initPy;
+  #  in
+  #    if versionRegex != null then
+  #      builtins.elemAt versionRegex 0
+  #    else
+  #      builtins.throw "Could not find __version__ in ${airflow-src}/airflow/providers/${providerPath}/__init__.py";
 
-  buildProvider = providerPath: buildPythonPackage {
-    pname = "apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] providerPath}";
-    version = getProviderVersion providerPath;
-    src = "${airflow-src}/airflow/providers/${providerPath}";
-    pyproject = false;
-  };
+  #buildProvider = providerPath: buildPythonPackage {
+  #  pname = "apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] providerPath}";
+  #  version = getProviderVersion providerPath;
+  #  src = "${airflow-src}/airflow/providers/${providerPath}";
+  #  pyproject = false;
+  #};
 
-  apache-airflow-providers-common-compat = buildProvider "common/compat";
-  apache-airflow-providers-common-io = buildProvider "common/io";
-  apache-airflow-providers-common-sql = buildProvider "common/sql";
-  apache-airflow-providers-fab = buildProvider "fab";
-  apache-airflow-providers-ftp = buildProvider "ftp";
-  apache-airflow-providers-http = buildProvider "http";
-  apache-airflow-providers-imap = buildProvider "imap";
-  apache-airflow-providers-smtp = buildProvider "smtp";
-  apache-airflow-providers-sqlite = buildProvider "sqlite";
+  #apache-airflow-providers-common-compat = buildProvider "common/compat";
+  #apache-airflow-providers-common-io = buildProvider "common/io";
+  #apache-airflow-providers-common-sql = buildProvider "common/sql";
+  #apache-airflow-providers-fab = buildProvider "fab";
+  #apache-airflow-providers-ftp = buildProvider "ftp";
+  #apache-airflow-providers-http = buildProvider "http";
+  #apache-airflow-providers-imap = buildProvider "imap";
+  #apache-airflow-providers-smtp = buildProvider "smtp";
+  #apache-airflow-providers-sqlite = buildProvider "sqlite";
 
   # Import generated file with metadata for provider dependencies and imports.
   # Enable additional providers using enabledProviders above.
@@ -208,15 +208,15 @@ buildPythonApplication rec {
 
   propagatedBuildInputs =
     [
-  apache-airflow-providers-common-compat
-  apache-airflow-providers-common-io
-  apache-airflow-providers-common-sql
-  apache-airflow-providers-fab
-  apache-airflow-providers-ftp
-  apache-airflow-providers-http
-  apache-airflow-providers-imap
-  apache-airflow-providers-smtp
-  apache-airflow-providers-sqlite
+  # apache-airflow-providers-common-compat
+  # apache-airflow-providers-common-io
+  # apache-airflow-providers-common-sql
+  # apache-airflow-providers-fab
+  # apache-airflow-providers-ftp
+  # apache-airflow-providers-http
+  # apache-airflow-providers-imap
+  # apache-airflow-providers-smtp
+  # apache-airflow-providers-sqlite
       gitpython
       gitdb
       packaging
@@ -239,6 +239,7 @@ buildPythonApplication rec {
       cryptography
       deprecated
       dill
+      flask-appbuilder
       flask-caching
       flask-session
       flask-wtf
@@ -368,9 +369,13 @@ buildPythonApplication rec {
   # transitive dependencies. To enable a provider, add it to extraProviders
   # above
   INSTALL_PROVIDERS_FROM_SOURCES = "true";
+  SETUPTOOLS_SCM_PRETEND_VERSION = version;
+  AIRFLOW_EXTRAS = "all";
 
   postPatch =
     ''
+      substituteInPlace pyproject.toml \
+        --replace-fail "\"/airflow/providers/\"," ""
     ''
     + lib.optionalString stdenv.hostPlatform.isDarwin ''
       # Fix failing test on Hydra
@@ -392,7 +397,7 @@ buildPythonApplication rec {
   ];
 
   postInstall = ''
-    #cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
+    cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
     # Needed for pythonImportsCheck below
     export HOME=$(mktemp -d)
   '';
