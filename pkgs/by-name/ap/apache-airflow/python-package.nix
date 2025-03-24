@@ -26,9 +26,6 @@
   asgiref,
   attrs,
   blinker,
-  # cached-property,
-  # cattrs,
-  # clickclick,
   colorlog,
   configupdater,
   connexion,
@@ -38,71 +35,47 @@
   deprecated,
   dill,
   flask,
-  # flask-login,
   flask-appbuilder,
   flask-caching,
   flask-session,
   flask-wtf,
   fsspec,
-  # gitpython,
   google-re2,
-  # graphviz,
   gunicorn,
   httpx,
-  # iso8601,
-  # importlib-resources,
   importlib-metadata,
-  # inflection,
   itsdangerous,
   jinja2,
   jsonschema,
   lazy-object-proxy,
   linkify-it-py,
   lockfile,
-  # markdown,
   markdown-it-py,
   markupsafe,
   marshmallow-oneofschema,
   mdit-py-plugins,
   methodtools,
-  # numpy,
-  # openapi-spec-validator,
   opentelemetry-api,
   opentelemetry-exporter-otlp,
-  # pandas,
-  # pathspec,
-  # pendulum,
   psutil,
-  # pydantic,
-  # pygments,
   pyjwt,
   python-daemon,
   python-dateutil,
   python-nvd3,
   python-slugify,
-  # python3-openid,
   pythonOlder,
-  # pyyaml,
   requests,
   requests-toolbelt,
   rfc3339-validator,
   rich,
   rich-argparse,
-  # setproctitle,
   sqlalchemy,
   sqlalchemy-jsonfield,
-  # swagger-ui-bundle,
   tabulate,
   tenacity,
   termcolor,
-  # typing-extensions,
-  # unicodecsv,
   universal-pathlib,
   werkzeug,
-  # freezegun,
-  # pytest-asyncio,
-  # pytestCheckHook,
-  # time-machine,
   writeScript,
 
   # Extra airflow providers to enable
@@ -158,34 +131,6 @@ let
     '';
   };
 
-  #getProviderVersion = providerPath:
-  #  let
-  #    initPy = builtins.readFile "${airflow-src}/airflow/providers/${providerPath}/__init__.py";
-  #    #versionRegex = builtins.match "^\s*__version__\s*=\s*['\"]([^'\"]*)['\"]" initPy;
-  #    versionRegex = builtins.match ".*__version__[[:space:]]*=[[:space:]]*[\"']([^\"']+)[\"'].*" initPy;
-  #  in
-  #    if versionRegex != null then
-  #      builtins.elemAt versionRegex 0
-  #    else
-  #      builtins.throw "Could not find __version__ in ${airflow-src}/airflow/providers/${providerPath}/__init__.py";
-
-  #buildProvider = providerPath: buildPythonPackage {
-  #  pname = "apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] providerPath}";
-  #  version = getProviderVersion providerPath;
-  #  src = "${airflow-src}/airflow/providers/${providerPath}";
-  #  pyproject = false;
-  #};
-
-  #apache-airflow-providers-common-compat = buildProvider "common/compat";
-  #apache-airflow-providers-common-io = buildProvider "common/io";
-  #apache-airflow-providers-common-sql = buildProvider "common/sql";
-  #apache-airflow-providers-fab = buildProvider "fab";
-  #apache-airflow-providers-ftp = buildProvider "ftp";
-  #apache-airflow-providers-http = buildProvider "http";
-  #apache-airflow-providers-imap = buildProvider "imap";
-  #apache-airflow-providers-smtp = buildProvider "smtp";
-  #apache-airflow-providers-sqlite = buildProvider "sqlite";
-
   # Import generated file with metadata for provider dependencies and imports.
   # Enable additional providers using enabledProviders above.
   providers = import ./providers.nix;
@@ -208,15 +153,6 @@ buildPythonApplication rec {
 
   propagatedBuildInputs =
     [
-  # apache-airflow-providers-common-compat
-  # apache-airflow-providers-common-io
-  # apache-airflow-providers-common-sql
-  # apache-airflow-providers-fab
-  # apache-airflow-providers-ftp
-  # apache-airflow-providers-http
-  # apache-airflow-providers-imap
-  # apache-airflow-providers-smtp
-  # apache-airflow-providers-sqlite
       gitpython
       gitdb
       packaging
@@ -282,76 +218,6 @@ buildPythonApplication rec {
       termcolor
       universal-pathlib
       werkzeug
-
- #     alembic
- #     argcomplete
- #     asgiref
- #     attrs
- #     blinker
- #     cached-property
- #     cattrs
- #     clickclick
- #     colorlog
- #     configupdater
- #     connexion
- #     cron-descriptor
- #     croniter
- #     cryptography
- #     deprecated
- #     dill
- #     flask
- #     flask-appbuilder
- #     flask-caching
- #     flask-session
- #     flask-wtf
- #     flask-login
- #     gitpython
- #     google-re2
- #     graphviz
- #     gunicorn
- #     httpx
- #     iso8601
- #     importlib-resources
- #     inflection
- #     itsdangerous
- #     jinja2
- #     jsonschema
- #     lazy-object-proxy
- #     linkify-it-py
- #     lockfile
- #     markdown
- #     markupsafe
- #     marshmallow-oneofschema
- #     mdit-py-plugins
- #     numpy
- #     openapi-spec-validator
- #     opentelemetry-api
- #     opentelemetry-exporter-otlp
- #     pandas
- #     pathspec
- #     pendulum
- #     psutil
- #     pydantic
- #     pygments
- #     pyjwt
- #     python-daemon
- #     python-dateutil
- #     python-nvd3
- #     python-slugify
- #     python3-openid
- #     pyyaml
- #     rich
- #     rich-argparse
- #     setproctitle
- #     sqlalchemy
- #     sqlalchemy-jsonfield
- #     swagger-ui-bundle
- #     tabulate
- #     tenacity
- #     termcolor
- #     typing-extensions
- #     unicodecsv
- #     werkzeug
     ]
     ++ lib.optionals (pythonOlder "3.9") [
       importlib-metadata
@@ -364,13 +230,6 @@ buildPythonApplication rec {
   #  pytestCheckHook
   #  time-machine
   #];
-
-  # By default, source code of providers is included but unusable due to missing
-  # transitive dependencies. To enable a provider, add it to extraProviders
-  # above
-  INSTALL_PROVIDERS_FROM_SOURCES = "true";
-  SETUPTOOLS_SCM_PRETEND_VERSION = version;
-  AIRFLOW_EXTRAS = "all";
 
   postPatch =
     ''
