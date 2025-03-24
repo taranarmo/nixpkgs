@@ -97,10 +97,16 @@ let
           hash = "sha256-t8w6ZS4gBDpnnKvL3DLtn+rRLQNJbrT2Hxm4f3+a3Xc=";
         };
         nativeCheckInputs = with pySelf; [ pytestCheckHook ];
-        pytestFlagsArray = [ "-k" "'null_session or filesystem_session'" ];
-        dependencies = with pySelf; [ flask_sqlalchemy cachelib ];
-        disabledTests = [];
-        disabledTestPaths = [];
+        pytestFlagsArray = [
+          "-k"
+          "'null_session or filesystem_session'"
+        ];
+        dependencies = with pySelf; [
+          flask_sqlalchemy
+          cachelib
+        ];
+        disabledTests = [ ];
+        disabledTestPaths = [ ];
         preCheck = "";
         postCheck = "";
       });

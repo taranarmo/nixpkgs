@@ -1,31 +1,12 @@
 {
   lib,
-  mkYarnPackage,
-  fetchYarnDeps,
-  stdenv,
-  python,
-  buildPythonPackage,
-  buildPythonApplication,
-  fetchFromGitHub,
-  hatchling,
-  gitpython,
-  gitdb,
-  packaging,
-  pathspec,
-  pluggy,
-  smmap,
-  tomli,
-  trove-classifiers,
-
-  setproctitle,
-  pygments,
-  pendulum,
-
   alembic,
   argcomplete,
   asgiref,
   attrs,
   blinker,
+  buildPythonApplication,
+  buildPythonPackage,
   colorlog,
   configupdater,
   connexion,
@@ -34,14 +15,19 @@
   cryptography,
   deprecated,
   dill,
+  fetchFromGitHub,
+  fetchYarnDeps,
   flask,
   flask-appbuilder,
   flask-caching,
   flask-session,
   flask-wtf,
   fsspec,
+  gitdb,
+  gitpython,
   google-re2,
   gunicorn,
+  hatchling,
   httpx,
   importlib-metadata,
   itsdangerous,
@@ -55,10 +41,17 @@
   marshmallow-oneofschema,
   mdit-py-plugins,
   methodtools,
+  mkYarnPackage,
   opentelemetry-api,
   opentelemetry-exporter-otlp,
+  packaging,
+  pathspec,
+  pendulum,
+  pluggy,
   psutil,
+  pygments,
   pyjwt,
+  python,
   python-daemon,
   python-dateutil,
   python-nvd3,
@@ -69,11 +62,16 @@
   rfc3339-validator,
   rich,
   rich-argparse,
+  setproctitle,
+  smmap,
   sqlalchemy,
   sqlalchemy-jsonfield,
+  stdenv,
   tabulate,
   tenacity,
   termcolor,
+  tomli,
+  trove-classifiers,
   universal-pathlib,
   werkzeug,
   writeScript,
@@ -143,7 +141,7 @@ buildPythonApplication rec {
   pname = "apache-airflow";
   inherit version;
   src = airflow-src;
-  pyproject=true;
+  pyproject = true;
 
   nativeBuildInputs = [ python.pkgs.hatchling ];
 
@@ -153,15 +151,6 @@ buildPythonApplication rec {
 
   propagatedBuildInputs =
     [
-      gitpython
-      gitdb
-      packaging
-      pathspec
-      pluggy
-      smmap
-      tomli
-      trove-classifiers
-
       alembic
       argcomplete
       asgiref
@@ -175,12 +164,14 @@ buildPythonApplication rec {
       cryptography
       deprecated
       dill
+      flask
       flask-appbuilder
       flask-caching
       flask-session
       flask-wtf
-      flask
       fsspec
+      gitdb
+      gitpython
       google-re2
       gunicorn
       httpx
@@ -197,7 +188,10 @@ buildPythonApplication rec {
       methodtools
       opentelemetry-api
       opentelemetry-exporter-otlp
+      packaging
+      pathspec
       pendulum
+      pluggy
       psutil
       pygments
       pyjwt
@@ -208,14 +202,17 @@ buildPythonApplication rec {
       requests
       requests-toolbelt
       rfc3339-validator
-      rich-argparse
       rich
+      rich-argparse
       setproctitle
+      smmap
       sqlalchemy
       sqlalchemy-jsonfield
       tabulate
       tenacity
       termcolor
+      tomli
+      trove-classifiers
       universal-pathlib
       werkzeug
     ]
@@ -287,20 +284,20 @@ buildPythonApplication rec {
   # Updates yarn.lock and package.json
   passthru.updateScript = writeScript "update.sh" ''
     #!/usr/bin/env nix-shell
-   #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
+    #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
 
     set -euo pipefail
 
-   # Get new version
+    # Get new version
     new_version="$(curl -s https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html |
       pcregrep -o1 'Airflow ([0-9.]+).' | head -1)"
     update-source-version ${pname} "$new_version"
 
-   # Update frontend
-   cd ./pkgs/servers/apache-airflow
-   curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/yarn.lock
-   curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
-   yarn2nix > yarn.nix
+    # Update frontend
+    cd ./pkgs/servers/apache-airflow
+    curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/yarn.lock
+    curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
+    yarn2nix > yarn.nix
 
     # update provider dependencies
     ./update-providers.py
