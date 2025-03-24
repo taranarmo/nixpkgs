@@ -104,12 +104,12 @@ let
         preCheck = "";
         postCheck = "";
       });
-      ## flask-appbuilder doesn't work with sqlalchemy 2.x, flask-appbuilder 3.x
-      ## https://github.com/dpgaspar/Flask-AppBuilder/issues/2038
+      # flask-appbuilder doesn't work with sqlalchemy 2.x, flask-appbuilder 3.x
+      # https://github.com/dpgaspar/Flask-AppBuilder/issues/2038
       flask-appbuilder = pySuper.flask-appbuilder.overridePythonAttrs (o: {
         meta.broken = false;
       });
-      ## a knock-on effect from overriding the sqlalchemy version
+      # a knock-on effect from overriding the sqlalchemy version
       flask-sqlalchemy = pySuper.flask-sqlalchemy.overridePythonAttrs (o: {
         src = fetchPypi {
           pname = "Flask-SQLAlchemy";
@@ -140,19 +140,9 @@ let
         };
         doCheck = false;
       });
-      ## apache-airflow doesn't work with sqlalchemy 2.x
-      ## https://github.com/apache/airflow/issues/28723
+      # apache-airflow doesn't work with sqlalchemy 2.x
+      # https://github.com/apache/airflow/issues/28723
       sqlalchemy = pySuper.sqlalchemy_1_4;
-
-      # gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
-      #   version = "3.1.44";
-      #   src = fetchFromGitHub {
-      #     owner = "gitpython-developers";
-      #     repo = "GitPython";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-KnKaBv/tKk4wiGWUWCEgd1vgrTouwUhqxJ1/nMjRaWk=";
-      #   };
-      # });
       gitdb = pySuper.gitdb.overridePythonAttrs (o: rec {
         version = "4.0.12";
         src = fetchFromGitHub {
@@ -162,41 +152,6 @@ let
           hash = "sha256-24nOiKHmrhdF0BAmx+1AxaDy8C+qlNFvpuZUyU+tMFU=";
         };
       });
-      # hatchling = pySuper.hatchling.overridePythonAttrs (o: rec {
-      #   pname = "hatchling";
-      #   version = "1.27.0";
-      #   src = fetchPypi {
-      #     inherit pname version;
-      #     hash = "sha256-lxwpbZgZq7OBERL8UsepdRyNOBiY82Uzuxb5eR6UH9Y=";
-      #   };
-      # });
-      # packaging = pySuper.packaging.overridePythonAttrs (o: rec {
-      #   version = "24.2";
-      #   src = fetchFromGitHub {
-      #     owner = "pypa";
-      #     repo = "packaging";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-7B/d9AG6D8CULM+Ut7g5MogEiXtvVgGvsu3comHHoos=";
-      #   };
-      # });
-      # pathspec = pySuper.pathspec.overridePythonAttrs (o: rec {
-      #   version = "0.12.1";
-      #   src = fetchFromGitHub {
-      #     owner = "cpburnz";
-      #     repo = "python-pathspec";
-      #     rev = "refs/tags/v${version}";
-      #     hash = "sha256-jv6uCN94LRfDy+583omvgmL96D2GcF8WhAM8V9ezH/0=";
-      #   };
-      # });
-      # pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
-      #   version = "1.5.0";
-      #   src = fetchFromGitHub {
-      #     owner = "pytest-dev";
-      #     repo = "pluggy";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
-      #   };
-      # });
       smmap = pySuper.smmap.overridePythonAttrs (o: rec {
         version = "5.0.2";
         src = fetchFromGitHub {
@@ -206,15 +161,6 @@ let
           hash = "sha256-0Y175kjv/8UJpSxtLpWH4/VT7JrcVPAq79Nf3rtHZZM=";
         };
       });
-      # tomli = pySuper.tomli.overridePythonAttrs (o: rec {
-      #   version = "2.2.1";
-      #   src = fetchFromGitHub {
-      #     owner = "hukkin";
-      #     repo = "tomli";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-4MWp9pPiUZZkjvGXzw8/gDele743NBj8uG4jvK2ohUM=";
-      #   };
-      # });
       # trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
       #   version = "2025.3.3.18";
       #   src = fetchPypi {
@@ -231,7 +177,6 @@ let
           hash = "sha256-F8vQVdZ9Xp2d5jKTqHMpQ/q8IVdOTHt07fEStJKM9fM=";
         };
       });
-
       apache-airflow = pySelf.callPackage ./python-package.nix { };
     };
   };
