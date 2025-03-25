@@ -22,6 +22,7 @@
   librsvg,
   libvpx,
   libwebp,
+  systemd,
   lz4,
   nv-codec-headers-10,
   nvidia_x11 ? null,
@@ -35,6 +36,10 @@
   which,
   x264,
   x265,
+  libavif,
+  libspng,
+  openh264,
+  libyuv,
   xauth,
   xdg-utils,
   xorg,
@@ -82,7 +87,7 @@ let
 in
 buildPythonApplication rec {
   pname = "xpra";
-  version = "6.2.3";
+  version = "6.2.5";
 
   stdenv = if withNvenc then cudaPackages.backendStdenv else args.stdenv;
 
@@ -90,7 +95,7 @@ buildPythonApplication rec {
     owner = "Xpra-org";
     repo = "xpra";
     rev = "v${version}";
-    hash = "sha256-5f6yHz3uc5qsU1F6D8r0KPo8tbrFP4pfxXTvIJYqKuI=";
+    hash = "sha256-XY8NZhWCRLjpgq0dOClzftvMR7g/X64b+OYyjOGC/lM=";
   };
 
   patches = [
@@ -132,6 +137,8 @@ buildPythonApplication rec {
     ]
     ++ (with gst_all_1; [
       gst-libav
+      gst-vaapi
+      gst-plugins-ugly
       gst-plugins-bad
       gst-plugins-base
       gst-plugins-good
@@ -154,7 +161,12 @@ buildPythonApplication rec {
       pango
       x264
       x265
+      libavif
+      libspng
+      openh264
+      libyuv
       xxHash
+      systemd
     ]
     ++ lib.optional withNvenc [
       nvencHeaders
@@ -182,10 +194,14 @@ buildPythonApplication rec {
         pygobject3
         pyinotify
         pyopengl
+        pyopengl-accelerate
         python-uinput
         pyxdg
         rencode
         invoke
+        aioquic
+        uvloop
+        pyopenssl
       ]
       ++ lib.optionals withNvenc [
         pycuda

@@ -122,6 +122,7 @@
   ./hardware/wooting.nix
   ./hardware/xone.nix
   ./hardware/xpadneo.nix
+  ./hardware/xpad-noone.nix
   ./i18n/input-method/default.nix
   ./i18n/input-method/fcitx5.nix
   ./i18n/input-method/hime.nix
@@ -560,6 +561,7 @@
   ./services/desktops/system76-scheduler.nix
   ./services/desktops/telepathy.nix
   ./services/desktops/tumbler.nix
+  ./services/desktops/wlock.nix
   ./services/desktops/zeitgeist.nix
   ./services/development/athens.nix
   ./services/development/blackfire.nix
@@ -825,6 +827,7 @@
   ./services/misc/languagetool.nix
   ./services/misc/leaps.nix
   ./services/misc/lifecycled.nix
+  ./services/misc/litellm.nix
   ./services/misc/llama-cpp.nix
   ./services/misc/logkeys.nix
   ./services/misc/mame.nix
@@ -848,6 +851,7 @@
   ./services/misc/ombi.nix
   ./services/misc/omnom.nix
   ./services/misc/open-webui.nix
+  ./services/misc/orthanc.nix
   ./services/misc/osrm.nix
   ./services/misc/owncast.nix
   ./services/misc/packagekit.nix
@@ -932,6 +936,7 @@
   ./services/monitoring/das_watchdog.nix
   ./services/monitoring/datadog-agent.nix
   ./services/monitoring/do-agent.nix
+  ./services/monitoring/fluent-bit.nix
   ./services/monitoring/fusion-inventory.nix
   ./services/monitoring/gatus.nix
   ./services/monitoring/gitwatch.nix
@@ -1099,6 +1104,11 @@
   ./services/networking/firewall.nix
   ./services/networking/firewall-iptables.nix
   ./services/networking/firewall-nftables.nix
+  ./services/networking/firezone/gateway.nix
+  ./services/networking/firezone/gui-client.nix
+  ./services/networking/firezone/headless-client.nix
+  ./services/networking/firezone/relay.nix
+  ./services/networking/firezone/server.nix
   ./services/networking/flannel.nix
   ./services/networking/freenet.nix
   ./services/networking/freeradius.nix
@@ -1116,6 +1126,7 @@
   ./services/networking/go-neb.nix
   ./services/networking/go-shadowsocks2.nix
   ./services/networking/gobgpd.nix
+  ./services/networking/gokapi.nix
   ./services/networking/gvpe.nix
   ./services/networking/hans.nix
   ./services/networking/harmonia.nix
@@ -1361,6 +1372,7 @@
   ./services/scheduling/atd.nix
   ./services/scheduling/cron.nix
   ./services/scheduling/fcron.nix
+  ./services/scheduling/prefect.nix
   ./services/scheduling/scx.nix
   ./services/search/elasticsearch-curator.nix
   ./services/search/elasticsearch.nix
@@ -1398,6 +1410,7 @@
   ./services/security/oauth2-proxy.nix
   ./services/security/oauth2-proxy-nginx.nix
   ./services/security/opensnitch.nix
+  ./services/security/paretosecurity.nix
   ./services/security/pass-secret-service.nix
   ./services/security/physlock.nix
   ./services/security/shibboleth-sp.nix
