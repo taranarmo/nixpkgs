@@ -16932,6 +16932,8 @@ self: super: with self; {
 
   sv-ttk = callPackage ../development/python-modules/sv-ttk { };
 
+  svcs = callPackage ../development/python-modules/svcs { };
+
   svg-path = callPackage ../development/python-modules/svg-path { };
 
   svg-py = callPackage ../development/python-modules/svg-py { };
