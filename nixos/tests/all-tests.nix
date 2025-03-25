@@ -264,7 +264,7 @@ in {
   cinnamon = handleTest ./cinnamon.nix {};
   cinnamon-wayland = handleTest ./cinnamon-wayland.nix {};
   cjdns = handleTest ./cjdns.nix {};
-  clatd = handleTest ./clatd.nix {};
+  clatd = runTest ./clatd.nix;
   clickhouse = handleTest ./clickhouse.nix {};
   cloud-init = handleTest ./cloud-init.nix {};
   cloud-init-hostname = handleTest ./cloud-init-hostname.nix {};
@@ -433,11 +433,18 @@ in {
     imports = [ ./firefox.nix ] ;
     _module.args.firefoxPackage = pkgs.floorp;
   };
+  fluent-bit = handleTest ./fluent-bit.nix {};
   fluentd = handleTest ./fluentd.nix {};
   fluidd = handleTest ./fluidd.nix {};
   fontconfig-default-fonts = handleTest ./fontconfig-default-fonts.nix {};
-  forgejo = handleTest ./forgejo.nix { forgejoPackage = pkgs.forgejo; };
-  forgejo-lts = handleTest ./forgejo.nix { forgejoPackage = pkgs.forgejo-lts; };
+  forgejo = import ./forgejo.nix {
+    inherit runTest;
+    forgejoPackage = pkgs.forgejo;
+  };
+  forgejo-lts = import ./forgejo.nix {
+    inherit runTest;
+    forgejoPackage = pkgs.forgejo-lts;
+  };
   freenet = handleTest ./freenet.nix {};
   freeswitch = handleTest ./freeswitch.nix {};
   freetube = discoverTests (import ./freetube.nix);
@@ -911,7 +918,7 @@ in {
   peering-manager = handleTest ./web-apps/peering-manager.nix {};
   peertube = handleTestOn ["x86_64-linux"] ./web-apps/peertube.nix {};
   peroxide = handleTest ./peroxide.nix {};
-  pgadmin4 = handleTest ./pgadmin4.nix {};
+  pgadmin4 = runTest ./pgadmin4.nix;
   pgbouncer = handleTest ./pgbouncer.nix {};
   pghero = runTest ./pghero.nix;
   pgweb = runTest ./pgweb.nix;
@@ -998,7 +1005,7 @@ in {
   qgis = handleTest ./qgis.nix { package = pkgs.qgis; };
   qgis-ltr = handleTest ./qgis.nix { package = pkgs.qgis-ltr; };
   qownnotes = handleTest ./qownnotes.nix {};
-  qtile = handleTestOn ["x86_64-linux" "aarch64-linux"] ./qtile/default.nix {};
+  qtile = runTestOn ["x86_64-linux" "aarch64-linux"] ./qtile/default.nix;
   quake3 = handleTest ./quake3.nix {};
   quicktun = handleTest ./quicktun.nix {};
   quickwit = handleTest ./quickwit.nix {};
@@ -1007,7 +1014,7 @@ in {
   radarr = handleTest ./radarr.nix {};
   radicale = handleTest ./radicale.nix {};
   radicle = runTest ./radicle.nix;
-  ragnarwm = handleTest ./ragnarwm.nix {};
+  ragnarwm = runTestOn ["x86_64-linux" "aarch64-linux"] ./ragnarwm.nix;
   rasdaemon = handleTest ./rasdaemon.nix {};
   rathole = runTest ./rathole.nix;
   readarr = handleTest ./readarr.nix {};
@@ -1051,7 +1058,7 @@ in {
   scaphandre = handleTest ./scaphandre.nix {};
   schleuder = handleTest ./schleuder.nix {};
   scion-freestanding-deployment = handleTest ./scion/freestanding-deployment {};
-  scrutiny = handleTest ./scrutiny.nix {};
+  scrutiny = runTest ./scrutiny.nix;
   sddm = handleTest ./sddm.nix {};
   sdl3 = handleTest ./sdl3.nix { };
   seafile = handleTest ./seafile.nix {};
@@ -1275,12 +1282,14 @@ in {
   vault-dev = handleTest ./vault-dev.nix {};
   vault-postgresql = handleTest ./vault-postgresql.nix {};
   vaultwarden = discoverTests (import ./vaultwarden.nix);
+  vdirsyncer = handleTest ./vdirsyncer.nix {};
   vector = handleTest ./vector {};
   velocity = runTest ./velocity.nix;
   vengi-tools = handleTest ./vengi-tools.nix {};
   victoriametrics = handleTest ./victoriametrics {};
   vikunja = handleTest ./vikunja.nix {};
   virtualbox = handleTestOn ["x86_64-linux"] ./virtualbox.nix {};
+  vm-variant = handleTest ./vm-variant.nix {};
   vscode-remote-ssh = handleTestOn ["x86_64-linux"] ./vscode-remote-ssh.nix {};
   vscodium = discoverTests (import ./vscodium.nix);
   vsftpd = handleTest ./vsftpd.nix {};
