@@ -13,6 +13,12 @@
   smmap,
   tomli,
   trove-classifiers,
+  sqlalchemy-utils,
+  fastapi,
+  libcst,
+  a2wsgi,
+  uuid6,
+
 
   setproctitle,
   pygments,
@@ -23,9 +29,9 @@
   asgiref,
   attrs,
   blinker,
-  # cached-property,
-  # cattrs,
-  # clickclick,
+  cached-property,
+  cattrs,
+  clickclick,
   colorlog,
   configupdater,
   connexion,
@@ -35,8 +41,8 @@
   deprecated,
   dill,
   flask,
-  # flask-login,
-  # flask-appbuilder,
+  flask-login,
+  flask-appbuilder,
   flask-caching,
   flask-session,
   flask-wtf,
@@ -66,11 +72,11 @@
   # openapi-spec-validator,
   opentelemetry-api,
   opentelemetry-exporter-otlp,
-  # pandas,
+  pandas,
   # pathspec,
   # pendulum,
   psutil,
-  # pydantic,
+  pydantic,
   # pygments,
   pyjwt,
   python-daemon,
@@ -106,7 +112,7 @@
   enabledProviders ? [ ],
   }:
 let
-  version = "3.0.0b3";
+  version = "3.0.0b4";
 
   airflow-src = fetchFromGitHub {
     owner = "apache";
@@ -115,7 +121,7 @@ let
     # Download using the git protocol rather than using tarballs, because the
     # GitHub archive tarballs don't appear to include tests
     forceFetchGit = true;
-    hash = "sha256-uA9VfhjjXrWULJxOvvc3yK3wjCM5/DY6HCq86Ubf3bk=";
+    hash = "sha256-dzhISe4wAdarGq9at0Np2hTvj2YFGzDMxNmOS7iYnXE=";
   };
 
   # airflow bundles a web interface, which is built using webpack by an undocumented shell script in airflow's source tree.
@@ -157,11 +163,11 @@ let
 
   # Import generated file with metadata for provider dependencies and imports.
   # Enable additional providers using enabledProviders above.
-  # providers = import ./providers.nix;
-  # getProviderDeps = provider: map (dep: python.pkgs.${dep}) providers.${provider}.deps;
-  # getProviderImports = provider: providers.${provider}.imports;
-  # providerDependencies = lib.concatMap getProviderDeps enabledProviders;
-  # providerImports = lib.concatMap getProviderImports enabledProviders;
+  providers = import ./providers.nix;
+  getProviderDeps = provider: map (dep: python.pkgs.${dep}) providers.${provider}.deps;
+  getProviderImports = provider: providers.${provider}.imports;
+  providerDependencies = lib.concatMap getProviderDeps enabledProviders;
+  providerImports = lib.concatMap getProviderImports enabledProviders;
 in
 buildPythonPackage rec {
   pname = "apache-airflow3";
@@ -171,6 +177,8 @@ buildPythonPackage rec {
   build-system = [ hatchling ];
 
   disabled = pythonOlder "3.7";
+
+  dontCheckRuntimeDeps = true;
 
   propagatedBuildInputs =
     [
@@ -182,6 +190,11 @@ gitpython
       smmap
       tomli
       trove-classifiers
+      sqlalchemy-utils
+      fastapi
+      libcst
+      a2wsgi
+      uuid6
 
       alembic
       argcomplete
@@ -262,58 +275,58 @@ gitpython
   #     flask-login
       gitdb
       gitpython
-  #     google-re2
-  #     graphviz
-  #     gunicorn
-  #     httpx
-  #     iso8601
-  #     importlib-resources
-  #     inflection
-  #     itsdangerous
-  #     jinja2
-  #     jsonschema
-  #     lazy-object-proxy
-  #     linkify-it-py
-  #     lockfile
-  #     markdown
-  #     markupsafe
-  #     marshmallow-oneofschema
-  #     mdit-py-plugins
-  #     numpy
-  #     openapi-spec-validator
-  #     opentelemetry-api
-  #     opentelemetry-exporter-otlp
-  #     pandas
-  #     pathspec
-  #     pendulum
-  #     psutil
-  #     pydantic
-  #     pygments
-  #     pyjwt
-  #     python-daemon
-  #     python-dateutil
-  #     python-nvd3
-  #     python-slugify
-  #     python3-openid
-  #     pyyaml
-  #     rich
-  #     rich-argparse
-  #     setproctitle
-  #     sqlalchemy
-  #     sqlalchemy-jsonfield
-  #     swagger-ui-bundle
-      # tabulate
-      # tenacity
-      # termcolor
-  #     typing-extensions
-  #     unicodecsv
-  #     werkzeug
-  #   ]
-  #   ++ lib.optionals (pythonOlder "3.9") [
-  #     importlib-metadata
-  #   ]
-  #   ++ providerDependencies;
-      ];
+      google-re2
+      # graphviz
+      gunicorn
+      httpx
+      # iso8601
+      # importlib-resources
+      # inflection
+      itsdangerous
+      jinja2
+      jsonschema
+      lazy-object-proxy
+      linkify-it-py
+      lockfile
+      # markdown
+      markupsafe
+      marshmallow-oneofschema
+      mdit-py-plugins
+      # numpy
+      # openapi-spec-validator
+      opentelemetry-api
+      opentelemetry-exporter-otlp
+      pandas
+      pathspec
+      pendulum
+      psutil
+      pydantic
+      pygments
+      pyjwt
+      python-daemon
+      python-dateutil
+      python-nvd3
+      python-slugify
+      # python3-openid
+      # pyyaml
+      rich
+      rich-argparse
+      setproctitle
+      sqlalchemy
+      sqlalchemy-jsonfield
+      # swagger-ui-bundle
+      tabulate
+      tenacity
+      termcolor
+      # typing-extensions
+      # unicodecsv
+      werkzeug
+    ]
+    ++ lib.optionals (pythonOlder "3.9") [
+      importlib-metadata
+    ]
+    ++ providerDependencies;
+      # ];
 
   # buildInputs = [
   #   airflow-frontend
@@ -329,7 +342,7 @@ gitpython
   # By default, source code of providers is included but unusable due to missing
   # transitive dependencies. To enable a provider, add it to extraProviders
   # above
-  #INSTALL_PROVIDERS_FROM_SOURCES = "true";
+  INSTALL_PROVIDERS_FROM_SOURCES = "true";
 
   #postPatch =
   #  ''
@@ -343,17 +356,17 @@ gitpython
   #      --replace "/tmp/sqlite_default.db" "$TMPDIR/sqlite_default.db"
   #  '';
 
-  #pythonRelaxDeps = [
-  #  "colorlog"
-  #  "flask-appbuilder"
-  #  "opentelemetry-api"
-  #  "pathspec"
-  #];
+  pythonRelaxDeps = [
+    "colorlog"
+    "flask-appbuilder"
+    "opentelemetry-api"
+    "pathspec"
+  ];
 
   ## allow for gunicorn processes to have access to Python packages
-  #makeWrapperArgs = [
-  #  "--prefix PYTHONPATH : $PYTHONPATH"
-  #];
+  makeWrapperArgs = [
+    "--prefix PYTHONPATH : $PYTHONPATH"
+  ];
 
   #postInstall = ''
   #  cp -rv ${airflow-frontend}/static/dist $out/${python.sitePackages}/airflow/www/static
@@ -361,32 +374,32 @@ gitpython
   #  export HOME=$(mktemp -d)
   #'';
 
-  #pythonImportsCheck = [
-  #  "airflow"
-  #] ++ providerImports;
+  pythonImportsCheck = [
+    "airflow"
+  ] ++ providerImports;
 
-  #preCheck = ''
-  #  export AIRFLOW_HOME=$HOME
-  #  export AIRFLOW__CORE__UNIT_TEST_MODE=True
-  #  export AIRFLOW_DB="$HOME/airflow.db"
-  #  export PATH=$PATH:$out/bin
+  preCheck = ''
+    export AIRFLOW_HOME=$HOME
+    export AIRFLOW__CORE__UNIT_TEST_MODE=True
+    export AIRFLOW_DB="$HOME/airflow.db"
+    export PATH=$PATH:$out/bin
 
-  #  airflow version
-  #  airflow db init
-  #  airflow db reset -y
-  #'';
+    airflow version
+    airflow db init
+    airflow db reset -y
+  '';
 
-  #pytestFlagsArray = [
-  #  "tests/core/test_core.py"
-  #];
+  pytestFlagsArray = [
+    "tests/core/test_core.py"
+  ];
 
-  #disabledTests = lib.optionals stdenv.hostPlatform.isDarwin [
-  #  "bash_operator_kill" # psutil.AccessDenied
-  #];
+  disabledTests = lib.optionals stdenv.hostPlatform.isDarwin [
+    "bash_operator_kill" # psutil.AccessDenied
+  ];
 
   ## Updates yarn.lock and package.json
-  #passthru.updateScript = writeScript "update.sh" ''
-  #  #!/usr/bin/env nix-shell
+  passthru.updateScript = writeScript "update.sh" ''
+    #!/usr/bin/env nix-shell
   #  #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
 
   #  set -euo pipefail
@@ -402,9 +415,9 @@ gitpython
   #  curl -O https://raw.githubusercontent.com/apache/airflow/$new_version/airflow/www/package.json
   #  yarn2nix > yarn.nix
 
-  #  # update provider dependencies
-  #  ./update-providers.py
-  #'';
+    # update provider dependencies
+    ./update-providers.py
+  '';
 
   # Note on testing the web UI:
   # You can (manually) test the web UI as follows:

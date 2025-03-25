@@ -49,52 +49,84 @@ let
       #    "test_swagger_ui"
       #  ];
       #});
-      #flask = pySuper.flask.overridePythonAttrs (o: rec {
-      #  version = "2.2.5";
-      #  src = fetchPypi {
-      #    pname = "Flask";
-      #    inherit version;
-      #    hash = "sha256-7e6bCn/yZiG9WowQ/0hK4oc3okENmbC7mmhQx/uXeqA=";
-      #  };
-      #  nativeBuildInputs = (o.nativeBuildInputs or [ ]) ++ [
-      #    pySelf.setuptools
-      #  ];
-      #});
+      werkzeug = pySuper.werkzeug.overridePythonAttrs (o: rec {
+        version = "2.3.8";
+        src = fetchPypi {
+          pname = "werkzeug";
+          inherit version;
+          hash = "sha256-VUslfHS763oNJUFgpPj/4YUkP1KlIDUGC3Ycpi2XfwM=";
+        };
+        nativeCheckInputs = with pySelf; [
+          pytest-xprocess
+        ];
+      });
+      flask = pySuper.flask.overridePythonAttrs (o: rec {
+        version = "2.2.5";
+        src = fetchPypi {
+          pname = "Flask";
+          inherit version;
+          hash = "sha256-7e6bCn/yZiG9WowQ/0hK4oc3okENmbC7mmhQx/uXeqA=";
+        };
+        nativeBuildInputs = (o.nativeBuildInputs or [ ]) ++ [
+          pySelf.setuptools
+        ];
+        doCheck = false;
+      });
+      flask-session = pySuper.flask-session.overridePythonAttrs (o: rec {
+        version = "0.5.0";
+        src = fetchFromGitHub {
+          owner = "palletc-eco";
+          repo = "flask-session";
+          rev = "refs/tags/${version}";
+          hash = "sha256-t8w6ZS4gBDpnnKvL3DLtn+rRLQNJbrT2Hxm4f3+a3Xc=";
+        };
+        nativeCheckInputs = with pySelf; [ pytestCheckHook ];
+        pytestFlagsArray = [ "-k" "'null_session or filesystem_session'" ];
+        dependencies = with pySelf; [ flask_sqlalchemy cachelib ];
+        disabledTests = [];
+        disabledTestPaths = [];
+        preCheck = "";
+        postCheck = "";
+      });
       ## flask-appbuilder doesn't work with sqlalchemy 2.x, flask-appbuilder 3.x
       ## https://github.com/dpgaspar/Flask-AppBuilder/issues/2038
-      #flask-appbuilder = pySuper.flask-appbuilder.overridePythonAttrs (o: {
-      #  meta.broken = false;
-      #});
+      flask-appbuilder = pySuper.flask-appbuilder.overridePythonAttrs (o: {
+        meta.broken = false;
+      });
       ## a knock-on effect from overriding the sqlalchemy version
-      #flask-sqlalchemy = pySuper.flask-sqlalchemy.overridePythonAttrs (o: {
-      #  src = fetchPypi {
-      #    pname = "Flask-SQLAlchemy";
-      #    version = "2.5.1";
-      #    hash = "sha256-K9pEtD58rLFdTgX/PMH4vJeTbMRkYjQkECv8LDXpWRI=";
-      #  };
-      #  format = "setuptools";
-      #});
-      #httpcore = pySuper.httpcore.overridePythonAttrs (o: rec {
-      #  # nullify upstream's pytest flags which cause
-      #  # "TLS/SSL connection has been closed (EOF)"
-      #  # with pytest-httpbin 1.x
-      #  preCheck = ''
-      #    substituteInPlace pyproject.toml \
-      #      --replace '[tool.pytest.ini_options]' '[tool.notpytest.ini_options]'
-      #  '';
-      #});
-      #pytest-httpbin = pySuper.pytest-httpbin.overridePythonAttrs (o: rec {
-      #  version = "1.0.2";
-      #  src = fetchFromGitHub {
-      #    owner = "kevin1024";
-      #    repo = "pytest-httpbin";
-      #    rev = "refs/tags/v${version}";
-      #    hash = "sha256-S4ThQx4H3UlKhunJo35esPClZiEn7gX/Qwo4kE1QMTI=";
-      #  };
-      #});
+      flask-sqlalchemy = pySuper.flask-sqlalchemy.overridePythonAttrs (o: {
+        src = fetchPypi {
+          pname = "Flask-SQLAlchemy";
+          version = "3.0.1";
+          hash = "sha256-Cl1YZ3SUmFbk8f6L46ZMWUYVlZ454rBB6Ie6xcdWvEI=";
+        };
+        nativeBuildInputs = with pySelf; [ pdm-pep517 ];
+        format = "pyproject";
+        #format = "setuptools";
+      });
+      httpcore = pySuper.httpcore.overridePythonAttrs (o: rec {
+        # nullify upstream's pytest flags which cause
+        # "TLS/SSL connection has been closed (EOF)"
+        # with pytest-httpbin 1.x
+        preCheck = ''
+          substituteInPlace pyproject.toml \
+            --replace '[tool.pytest.ini_options]' '[tool.notpytest.ini_options]'
+        '';
+        doCheck = false;
+      });
+      pytest-httpbin = pySuper.pytest-httpbin.overridePythonAttrs (o: rec {
+        version = "1.0.2";
+        src = fetchFromGitHub {
+          owner = "kevin1024";
+          repo = "pytest-httpbin";
+          rev = "refs/tags/v${version}";
+          hash = "sha256-S4ThQx4H3UlKhunJo35esPClZiEn7gX/Qwo4kE1QMTI=";
+        };
+        doCheck = false;
+      });
       ## apache-airflow doesn't work with sqlalchemy 2.x
       ## https://github.com/apache/airflow/issues/28723
-      #sqlalchemy = pySuper.sqlalchemy_1_4;
+      sqlalchemy = pySuper.sqlalchemy_1_4;
 
       # gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
       #   version = "3.1.44";
@@ -168,11 +200,11 @@ let
       #   };
       # });
       trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
-        version = "2025.3.3.18";
+        version = "2025.3.13.13";
         src = fetchPypi {
           inherit version;
           pname = "trove_classifiers";
-          hash = "sha256-P/z6kKQorf3hpdkOOqG4f+R0xdvb9cy8p07Wm6g8XKc=";
+          hash = "sha256-Kl4k3a+yDaIiWoJf4WfE/U7L8xLO9DENZ/GdxA2n3I0=";
         };
       });
       # trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
