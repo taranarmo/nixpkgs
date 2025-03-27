@@ -859,6 +859,7 @@
   ./services/misc/parsoid.nix
   ./services/misc/persistent-evdev.nix
   ./services/misc/pghero.nix
+  ./services/misc/pinchflat.nix
   ./services/misc/pinnwand.nix
   ./services/misc/plex.nix
   ./services/misc/plikd.nix
@@ -1019,6 +1020,7 @@
   ./services/network-filesystems/kubo.nix
   ./services/network-filesystems/litestream/default.nix
   ./services/network-filesystems/moosefs.nix
+  ./services/network-filesystems/ipfs-cluster.nix
   ./services/network-filesystems/netatalk.nix
   ./services/network-filesystems/nfsd.nix
   ./services/network-filesystems/openafs/client.nix
@@ -1514,6 +1516,7 @@
   ./services/web-apps/flarum.nix
   ./services/web-apps/fluidd.nix
   ./services/web-apps/freshrss.nix
+  ./services/web-apps/froide-govplan.nix
   ./services/web-apps/galene.nix
   ./services/web-apps/gancio.nix
   ./services/web-apps/gerrit.nix

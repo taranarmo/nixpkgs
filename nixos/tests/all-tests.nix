@@ -450,6 +450,7 @@ in {
   freetube = discoverTests (import ./freetube.nix);
   freshrss = handleTest ./freshrss {};
   frigate = runTest ./frigate.nix;
+  froide-govplan = runTest ./web-apps/froide-govplan.nix;
   frp = handleTest ./frp.nix {};
   frr = handleTest ./frr.nix {};
   fsck = handleTest ./fsck.nix {};
@@ -508,7 +509,7 @@ in {
   guacamole-server = handleTest ./guacamole-server.nix {};
   guix = handleTest ./guix {};
   gvisor = handleTest ./gvisor.nix {};
-  h2o = discoverTests (import ./web-servers/h2o { inherit handleTestOn; });
+  h2o = import ./web-servers/h2o { inherit recurseIntoAttrs runTest; };
   hadoop = import ./hadoop { inherit handleTestOn; package=pkgs.hadoop; };
   hadoop_3_3 = import ./hadoop { inherit handleTestOn; package=pkgs.hadoop_3_3; };
   hadoop2 = import ./hadoop { inherit handleTestOn; package=pkgs.hadoop2; };
