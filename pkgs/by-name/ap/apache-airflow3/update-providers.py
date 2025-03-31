@@ -167,7 +167,7 @@ def get_provider_reqs(version: str, packages: Dict) -> Dict:
 
 def get_provider_yaml(version: str, provider: str) -> Dict:
     provider_dir = provider.replace(".", "/")
-    path = f"airflow/providers/{provider_dir}/provider.yaml"
+    path = f"providers/{provider_dir}/provider.yaml"
     try:
         return get_file_from_github(version, path)
     except HTTPError:
