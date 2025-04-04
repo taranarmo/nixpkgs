@@ -6,7 +6,6 @@
   attrs,
   blinker,
   buildPythonApplication,
-  buildPythonPackage,
   colorlog,
   configupdater,
   connexion,
@@ -29,7 +28,6 @@
   gunicorn,
   hatchling,
   httpx,
-  importlib-metadata,
   itsdangerous,
   jinja2,
   jsonschema,
@@ -45,6 +43,7 @@
   opentelemetry-api,
   opentelemetry-exporter-otlp,
   packaging,
+  pandas,
   pathspec,
   pendulum,
   pluggy,
@@ -56,7 +55,6 @@
   python-dateutil,
   python-nvd3,
   python-slugify,
-  pythonOlder,
   requests,
   requests-toolbelt,
   rfc3339-validator,
@@ -77,7 +75,17 @@
   writeScript,
 
   # Extra airflow providers to enable
-  enabledProviders ? [ ],
+  enabledProviders ? [
+    "common_compat"
+    "common_io"
+    "common_sql"
+    "fab"
+    "ftp"
+    "http"
+    "imap"
+    "smtp"
+    "sqlite"
+  ],
 }:
 let
   version = "2.10.5";
@@ -129,13 +137,184 @@ let
     '';
   };
 
-  # Import generated file with metadata for provider dependencies and imports.
-  # Enable additional providers using enabledProviders above.
+  # Import generated file with metadata for provider dependencies and imports
   providers = import ./providers.nix;
+
+  # Map provider names to their actual directory paths
+  providerMapping = {
+    common_compat = "common/compat";
+    common_io = "common/io";
+    common_sql = "common/sql";
+    # Add other mappings if needed
+  };
+
+  # Helper functions to get provider information
+  getProviderPath = provider: if lib.hasAttr provider providerMapping then providerMapping.${provider} else provider;
   getProviderDeps = provider: map (dep: python.pkgs.${dep}) providers.${provider}.deps;
   getProviderImports = provider: providers.${provider}.imports;
-  providerDependencies = lib.concatMap getProviderDeps enabledProviders;
   providerImports = lib.concatMap getProviderImports enabledProviders;
+
+  # Build a provider package using the modified approach
+  buildProvider = provider: let
+    providerPath = getProviderPath provider;
+  in
+    python.pkgs.buildPythonPackage {
+      pname = "apache-airflow-providers-${provider}";
+      version = "unstable";  # Will be extracted in the build phase
+      format = "other";  # Don't use setuptools or other build systems
+
+      src = airflow-src;
+
+      propagatedBuildInputs = getProviderDeps provider;
+      dependencies = [ packaging ];
+      #pythonImportsCheck = providers.${provider}.imports;
+      #doCheck = false;
+
+      buildPhase = ''
+        # Extract version from the provider's __init__.py file
+        if [ -f "airflow/providers/${providerPath}/__init__.py" ]; then
+          version=$(grep -oP "(?<=__version__ = ')[^']+" "airflow/providers/${providerPath}/__init__.py" || echo "0.0.0")
+          echo "Provider ${provider} version: $version"
+        else
+          echo "Error: __init__.py not found for provider ${provider} at path airflow/providers/${providerPath}"
+          exit 1
+        fi
+      '';
+
+      installPhase = ''
+        # Create directory structure
+        mkdir -p $out/${python.sitePackages}/airflow/providers
+
+        # Copy the provider directory
+        if [ -d "airflow/providers/${providerPath}" ]; then
+          mkdir -p $out/${python.sitePackages}/airflow/providers/$(dirname "${providerPath}")
+          cp -r airflow/providers/${providerPath} $out/${python.sitePackages}/airflow/providers/$(dirname "${providerPath}")
+
+          # Create parent __init__.py files
+          touch $out/${python.sitePackages}/airflow/__init__.py
+          touch $out/${python.sitePackages}/airflow/providers/__init__.py
+
+          # Create any needed intermediate __init__.py files for nested providers
+          providerDir=$(dirname "${providerPath}")
+          while [ "$providerDir" != "." ] && [ -n "$providerDir" ]; do
+            mkdir -p $out/${python.sitePackages}/airflow/providers/$providerDir
+            touch $out/${python.sitePackages}/airflow/providers/$providerDir/__init__.py
+            providerDir=$(dirname "$providerDir")
+          done
+
+          # Create egg-info for package discovery
+          mkdir -p $out/${python.sitePackages}/apache_airflow_providers_${lib.replaceStrings ["/"] ["_"] provider}.egg-info
+          cat > $out/${python.sitePackages}/apache_airflow_providers_${lib.replaceStrings ["/"] ["_"] provider}.egg-info/PKG-INFO <<EOF
+  Metadata-Version: 2.1
+  Name: apache-airflow-providers-${lib.replaceStrings ["/"] ["-"] provider}
+  Version: $version
+  Summary: Apache Airflow Provider for ${provider}
+  EOF
+        else
+          echo "Provider directory not found: airflow/providers/${providerPath}"
+          exit 1
+        fi
+      '';
+    };
+
+  # Map function to build all enabled providers
+  providerPackages = map buildProvider enabledProviders;
+
+  task-sdk = python.pkgs.buildPythonPackage {
+    pname = "apache-airflow-task-sdk";
+    version = "unstable";  # Will be extracted in the build phase
+    format = "other";  # Don't use setuptools or other build systems
+
+    src = airflow-src;
+
+    # Common airflow provider dependencies that task SDK might need
+    # You might need to adjust these based on actual requirements
+    propagatedBuildInputs = [
+      python.pkgs.markupsafe
+      python.pkgs.jinja2
+      python.pkgs.sqlalchemy
+    ];
+
+    # Disable imports check
+    # doCheck = false;
+
+    buildPhase = ''
+      # Extract version from the task/__init__.py file
+      if [ -f "airflow/task/__init__.py" ]; then
+        version=$(grep -oP "(?<=__version__ = ')[^']+" "airflow/task/__init__.py" || echo "0.0.0")
+        echo "Task SDK version: $version"
+      else
+        # Fallback to the main airflow version
+        version="${version}"
+        echo "Using main Airflow version for task SDK: $version"
+      fi
+    '';
+
+    installPhase = ''
+      # Create directory structure
+      mkdir -p $out/${python.sitePackages}/airflow
+
+      # Create a proper airflow/__init__.py with version information
+      cat > $out/${python.sitePackages}/airflow/__init__.py <<EOF
+  # This is a minimal __init__.py to satisfy task SDK imports
+  __version__ = "${version}"
+  EOF
+
+      # Copy the task directory
+      if [ -d "airflow/task" ]; then
+        cp -r airflow/task $out/${python.sitePackages}/airflow/
+
+        # Create egg-info for package discovery
+        mkdir -p $out/${python.sitePackages}/apache_airflow_task_sdk.egg-info
+        cat > $out/${python.sitePackages}/apache_airflow_task_sdk.egg-info/PKG-INFO <<EOF
+  Metadata-Version: 2.1
+  Name: apache-airflow-task-sdk
+  Version: $version
+  Summary: Apache Airflow Task SDK
+  EOF
+      else
+        echo "Task SDK directory not found: airflow/task"
+        exit 1
+      fi
+    '';
+  };
+
+  api-fastapi = python.pkgs.buildPythonPackage {
+    pname = "apache-airflow-api-fastapi";
+    version = "unstable";
+    format = "other";
+    src = airflow-src;
+    propagatedBuildInputs = [
+      python.pkgs.fastapi
+      python.pkgs.pydantic
+    ];
+    buildPhase = ''
+      if [ -f "airflow/api/__init__.py" ]; then
+        version=$(grep -oP "(?<=__version__ = ')[^']+" "airflow/api/__init__.py" || echo "0.0.0")
+        echo "API FastAPI version: $version"
+      else
+        version="${version}"
+        echo "Using main Airflow version for API FastAPI: $version"
+      fi
+    '';
+    installPhase = ''
+      mkdir -p $out/${python.sitePackages}/airflow
+      if [ -d "airflow/api" ]; then
+        cp -r airflow/api $out/${python.sitePackages}/airflow/
+        mkdir -p $out/${python.sitePackages}/apache_airflow_api_fastapi.egg-info
+        cat > $out/${python.sitePackages}/apache_airflow_api_fastapi.egg-info/PKG-INFO <<EOF
+  Metadata-Version: 2.1
+  Name: apache-airflow-api-fastapi
+  Version: $version
+  Summary: Apache Airflow API FastAPI
+  EOF
+      else
+        echo "API FastAPI directory not found: airflow/api"
+        exit 1
+      fi
+    '';
+  };
+
 in
 buildPythonApplication rec {
   pname = "apache-airflow";
@@ -143,11 +322,16 @@ buildPythonApplication rec {
   src = airflow-src;
   pyproject = true;
 
-  nativeBuildInputs = [ python.pkgs.hatchling ];
-
-  disabled = pythonOlder "3.8";
+  nativeBuildInputs = [ hatchling ];
 
   dontCheckRuntimeDeps = true;
+
+  dependencies = [
+    task-sdk
+    pandas
+    #api-fastapi
+    providerPackages
+  ];
 
   propagatedBuildInputs =
     [
@@ -215,11 +399,7 @@ buildPythonApplication rec {
       trove-classifiers
       universal-pathlib
       werkzeug
-    ]
-    ++ lib.optionals (pythonOlder "3.9") [
-      importlib-metadata
-    ]
-    ++ providerDependencies;
+    ];
 
   #nativeCheckInputs = [
   #  freezegun
@@ -260,6 +440,8 @@ buildPythonApplication rec {
 
   pythonImportsCheck = [
     "airflow"
+    #"airflow.api_fastapi"
+    #"airflow.sdk"
   ] ++ providerImports;
 
   preCheck = ''
