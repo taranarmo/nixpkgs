@@ -30,15 +30,13 @@
   setproctitle,
   pygments,
   pendulum,
+  pandas,
 
   alembic,
   argcomplete,
   asgiref,
   attrs,
   blinker,
-  cached-property,
-  cattrs,
-  clickclick,
   colorlog,
   configupdater,
   connexion,
@@ -48,8 +46,6 @@
   deprecated,
   dill,
   flask,
-  flask-login,
-  flask-appbuilder,
   flask-caching,
   flask-session,
   flask-wtf,
@@ -57,7 +53,6 @@
   google-re2,
   gunicorn,
   httpx,
-  importlib-metadata,
   itsdangerous,
   jinja2,
   jsonschema,
@@ -71,9 +66,7 @@
   methodtools,
   opentelemetry-api,
   opentelemetry-exporter-otlp,
-  pandas,
   psutil,
-  pydantic,
   pyjwt,
   python-daemon,
   python-dateutil,
@@ -122,7 +115,6 @@ let
   getProviderPath = provider: if lib.hasAttr provider providerMapping then providerMapping.${provider} else provider;
   getProviderDeps = provider: map (dep: python.pkgs.${dep}) providers.${provider}.deps;
   getProviderImports = provider: providers.${provider}.imports;
-  providerDependencies = lib.concatMap getProviderDeps enabledProviders;
   providerImports = lib.concatMap getProviderImports enabledProviders;
 
   getProviderVersion = provider: let
@@ -134,7 +126,7 @@ let
     version = getProviderVersion provider;
     src = "${airflow-src}/providers/${getProviderPath provider}";
     buildInputs = [ flit-core ];
-    checkInputs = getProviderDeps provider;
+    dependencies = getProviderDeps provider;
     pythonRemoveDeps = [
       "apache-airflow"
     ];
@@ -143,24 +135,24 @@ let
 
   providerPackages = map buildProvider enabledProviders;
 
-taskSdk = buildPythonPackage {
-  pname = "task-sdk";
-  version = "1.0.0"; # Replace with the actual version if needed
-  src = "${airflow-src}/task-sdk";
-  build-system = [ hatchling attrs ];
-  dependencies = [
-    httpx
-    jinja2
-    methodtools
-    msgspec
-    pendulum
-    psutil
-    python-dateutil
-    retryhttp
-    structlog
-  ];
-  pyproject = true;
-};
+  taskSdk = buildPythonPackage {
+    pname = "task-sdk";
+    version = "1.0.0"; # Replace with the actual version if needed
+    src = "${airflow-src}/task-sdk";
+    build-system = [ hatchling attrs ];
+    dependencies = [
+      httpx
+      jinja2
+      methodtools
+      msgspec
+      pendulum
+      psutil
+      python-dateutil
+      retryhttp
+      structlog
+    ];
+    pyproject = true;
+  };
 
 in
 buildPythonApplication {
@@ -169,6 +161,13 @@ buildPythonApplication {
   src = airflow-src;
   pyproject = true;
   build-system = [ hatchling ];
+
+  dependencies = [
+    cadwyn
+    svcs
+    taskSdk
+    pandas
+  ] ++ providerPackages;
 
   propagatedBuildInputs =
     [
@@ -242,10 +241,7 @@ buildPythonApplication {
       termcolor
       universal-pathlib
       werkzeug
-    ]
-    ++ providerDependencies
-    ++ providerPackages
-    ++ [ taskSdk ];
+    ];
 
   pythonRelaxDeps = [
     "colorlog"
@@ -259,7 +255,7 @@ buildPythonApplication {
   ];
 
   pythonImportsCheck = [
-    #"airflow"
+    "airflow"
   ] ++ providerImports;
 
   preCheck = ''
