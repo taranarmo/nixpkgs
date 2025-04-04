@@ -96,6 +96,7 @@
     "common_compat"
     "common_io"
     "common_sql"
+    "fab"
     "smtp"
     "sqlite"
     "standard"
