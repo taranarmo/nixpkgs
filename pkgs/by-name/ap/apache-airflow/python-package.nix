@@ -50,6 +50,8 @@
   psutil,
   pygments,
   pyjwt,
+  pytest-asyncio,
+  pytestCheckHook,
   python,
   python-daemon,
   python-dateutil,
@@ -167,8 +169,7 @@ let
 
       propagatedBuildInputs = getProviderDeps provider;
       dependencies = [ packaging ];
-      #pythonImportsCheck = providers.${provider}.imports;
-      #doCheck = false;
+      # pythonImportsCheck = providers.${provider}.imports;
 
       buildPhase = ''
         # Extract version from the provider's __init__.py file
@@ -327,86 +328,84 @@ buildPythonApplication rec {
   dontCheckRuntimeDeps = true;
 
   dependencies = [
-    task-sdk
     pandas
-    #api-fastapi
     providerPackages
+    alembic
+    argcomplete
+    # asgiref
+    # attrs
+    # blinker
+    colorlog
+    # configupdater
+    connexion
+    cron-descriptor
+    croniter
+    cryptography
+    # deprecated
+    dill
+    # flask
+    # flask-appbuilder
+    flask-caching
+    flask-session
+    # flask-wtf
+    fsspec
+    gitdb
+    gitpython
+    # google-re2
+    # gunicorn
+    # httpx
+    # itsdangerous
+    # jinja2
+    # jsonschema
+    lazy-object-proxy
+    # linkify-it-py
+    lockfile
+    # markdown-it-py
+    # markupsafe
+    # marshmallow-oneofschema
+    # mdit-py-plugins
+    methodtools
+    # opentelemetry-api
+    # opentelemetry-exporter-otlp
+    packaging
+    pathspec
+    pendulum
+    pluggy
+    psutil
+    # pygments
+    # pyjwt
+    # python-daemon
+    # python-dateutil
+    # python-nvd3
+    # python-slugify
+    # requests
+    # requests-toolbelt
+    # rfc3339-validator
+    # rich
+    rich-argparse
+    # setproctitle
+    smmap
+    sqlalchemy
+    sqlalchemy-jsonfield
+    tabulate
+    tenacity
+    # termcolor
+    tomli
+    trove-classifiers
+    universal-pathlib
+    # werkzeug
   ];
 
-  propagatedBuildInputs =
-    [
-      alembic
-      argcomplete
-      asgiref
-      attrs
-      blinker
-      colorlog
-      configupdater
-      connexion
-      cron-descriptor
-      croniter
-      cryptography
-      deprecated
-      dill
-      flask
-      flask-appbuilder
-      flask-caching
-      flask-session
-      flask-wtf
-      fsspec
-      gitdb
-      gitpython
-      google-re2
-      gunicorn
-      httpx
-      itsdangerous
-      jinja2
-      jsonschema
-      lazy-object-proxy
-      linkify-it-py
-      lockfile
-      markdown-it-py
-      markupsafe
-      marshmallow-oneofschema
-      mdit-py-plugins
-      methodtools
-      opentelemetry-api
-      opentelemetry-exporter-otlp
-      packaging
-      pathspec
-      pendulum
-      pluggy
-      psutil
-      pygments
-      pyjwt
-      python-daemon
-      python-dateutil
-      python-nvd3
-      python-slugify
-      requests
-      requests-toolbelt
-      rfc3339-validator
-      rich
-      rich-argparse
-      setproctitle
-      smmap
-      sqlalchemy
-      sqlalchemy-jsonfield
-      tabulate
-      tenacity
-      termcolor
-      tomli
-      trove-classifiers
-      universal-pathlib
-      werkzeug
-    ];
+  nativeCheckInputs = [
+    pytest-asyncio
+    pytestCheckHook
+    configupdater
+    marshmallow-oneofschema
+  ];
 
-  #nativeCheckInputs = [
-  #  freezegun
-  #  pytest-asyncio
-  #  pytestCheckHook
-  #  time-machine
-  #];
+  checkPhase = ''
+    export PYTEST_ADDOPTS="--asyncio_default_fixture_loop_scope=cache"
+  '';
 
   postPatch =
     ''
@@ -421,8 +420,6 @@ buildPythonApplication rec {
 
   pythonRelaxDeps = [
     "colorlog"
-    "flask-appbuilder"
-    "opentelemetry-api"
     "pathspec"
     "trove-classifiers"
   ];
@@ -440,8 +437,6 @@ buildPythonApplication rec {
 
   pythonImportsCheck = [
     "airflow"
-    #"airflow.api_fastapi"
-    #"airflow.sdk"
   ] ++ providerImports;
 
   preCheck = ''
@@ -449,10 +444,6 @@ buildPythonApplication rec {
     export AIRFLOW__CORE__UNIT_TEST_MODE=True
     export AIRFLOW_DB="$HOME/airflow.db"
     export PATH=$PATH:$out/bin
-
-    airflow version
-    airflow db init
-    airflow db reset -y
   '';
 
   pytestFlagsArray = [
@@ -489,8 +480,8 @@ buildPythonApplication rec {
   # You can (manually) test the web UI as follows:
   #
   #   nix shell .#apache-airflow
-  #   airflow db reset  # WARNING: this will wipe any existing db state you might have!
-  #   airflow db init
+  #   airflow version
+  #   airflow db reset -y
   #   airflow standalone
   #
   # Then navigate to the localhost URL using the credentials printed, try
