@@ -1,5 +1,6 @@
 {
   fetchFromGitHub,
+  fetchpatch,
   fetchPypi,
   python3,
 }:
@@ -75,7 +76,13 @@ let
         nativeBuildInputs = (o.nativeBuildInputs or [ ]) ++ [
           pySelf.setuptools
         ];
-        doCheck = false;
+        pytestFlagsArray = [
+          # tests that are marked with filterwarnings fail with
+          # DeprecationWarning: 'pkgutil.get_loader' is deprecated and slated for
+          # removal in Python 3.14; use importlib.util.find_spec() instead
+          "-W ignore"
+        ];
+        #doCheck = false;
       });
       flask-login = pySuper.flask-login.overridePythonAttrs (o: rec {
         version = "0.6.3";
@@ -86,7 +93,10 @@ let
           hash = "sha256-Sn7Ond67P/3+OmKKFE/KfA6FE4IajhiRXVVrXKJtY3I=";
         };
         nativeBuildInputs = with pySelf; [ setuptools ];
-        doCheck = false;
+        pytestFlagsArray = [
+          "-W ignore"
+        ];
+        #doCheck = false;
       });
       flask-session = pySuper.flask-session.overridePythonAttrs (o: rec {
         version = "0.5.0";
@@ -124,7 +134,13 @@ let
         };
         nativeBuildInputs = with pySelf; [ pdm-pep517 ];
         format = "setuptools";
-        doCheck = false;
+        # pytestFlagsArray = [
+        #   "-W ignore"
+        # ];
+        disabledTests = [
+          "test_persist_selectable"
+        ];
+        #doCheck = false;
       });
       httpcore = pySuper.httpcore.overridePythonAttrs (o: rec {
         # nullify upstream's pytest flags which cause
@@ -134,7 +150,7 @@ let
           substituteInPlace pyproject.toml \
             --replace '[tool.pytest.ini_options]' '[tool.notpytest.ini_options]'
         '';
-        doCheck = false;
+        #doCheck = false;
       });
       pytest-httpbin = pySuper.pytest-httpbin.overridePythonAttrs (o: rec {
         version = "1.0.2";
@@ -144,7 +160,19 @@ let
           rev = "refs/tags/v${version}";
           hash = "sha256-S4ThQx4H3UlKhunJo35esPClZiEn7gX/Qwo4kE1QMTI=";
         };
-        doCheck = false;
+        # use unmerged PR #65 to fix
+        # it was closed in favour of the other which isn't compatible with old version
+        patches = [
+          (fetchpatch {
+            url = "https://github.com/kevin1024/pytest-httpbin/pull/65/commits/4e325f877ff8f77dec9f380bd8e53bb42976775c.patch";
+            hash = "sha256-a33XcdMupD+7ZzvUibePdldGImmPLDNU2sxRbwpveDA=";
+          })
+          (fetchpatch {
+            url = "https://github.com/kevin1024/pytest-httpbin/pull/65/commits/463afb9b200563ac6fe7ae535f7a7a3c818b0418.patch";
+            hash = "sha256-HFmuLtAtEjnB6heSG1YNnqxtz2phXNkHbQaZyB5bLJs=";
+          })
+        ];
+        #doCheck = false;
       });
       # apache-airflow doesn't work with sqlalchemy 2.x
       # https://github.com/apache/airflow/issues/28723
