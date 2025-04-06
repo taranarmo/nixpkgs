@@ -339,6 +339,7 @@ buildPythonPackage rec {
       bhipple
       gbpdt
       ingenieroariel
+      taranarmo
     ];
     knownVulnerabilities = [
       "CVE-2023-50943"
