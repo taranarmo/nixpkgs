@@ -80,9 +80,8 @@ let
           # tests that are marked with filterwarnings fail with
           # DeprecationWarning: 'pkgutil.get_loader' is deprecated and slated for
           # removal in Python 3.14; use importlib.util.find_spec() instead
-          "-W ignore"
+          "-W ignore::DeprecationWarning"
         ];
-        #doCheck = false;
       });
       flask-login = pySuper.flask-login.overridePythonAttrs (o: rec {
         version = "0.6.3";
@@ -94,9 +93,12 @@ let
         };
         nativeBuildInputs = with pySelf; [ setuptools ];
         pytestFlagsArray = [
-          "-W ignore"
+          # DeprecationWarning: datetime.datetime.utcnow() is deprecated
+          # and scheduled for removal in a future version.
+          # Use timezone-aware objects to represent datetimes in UTC:
+          # datetime.datetime.now(datetime.UTC).
+          "-W ignore::DeprecationWarning"
         ];
-        #doCheck = false;
       });
       flask-session = pySuper.flask-session.overridePythonAttrs (o: rec {
         version = "0.5.0";
@@ -134,13 +136,9 @@ let
         };
         nativeBuildInputs = with pySelf; [ pdm-pep517 ];
         format = "setuptools";
-        # pytestFlagsArray = [
-        #   "-W ignore"
-        # ];
         disabledTests = [
           "test_persist_selectable"
         ];
-        #doCheck = false;
       });
       httpcore = pySuper.httpcore.overridePythonAttrs (o: rec {
         # nullify upstream's pytest flags which cause
@@ -150,7 +148,6 @@ let
           substituteInPlace pyproject.toml \
             --replace '[tool.pytest.ini_options]' '[tool.notpytest.ini_options]'
         '';
-        #doCheck = false;
       });
       pytest-httpbin = pySuper.pytest-httpbin.overridePythonAttrs (o: rec {
         version = "1.0.2";
@@ -172,7 +169,6 @@ let
             hash = "sha256-HFmuLtAtEjnB6heSG1YNnqxtz2phXNkHbQaZyB5bLJs=";
           })
         ];
-        #doCheck = false;
       });
       # apache-airflow doesn't work with sqlalchemy 2.x
       # https://github.com/apache/airflow/issues/28723
