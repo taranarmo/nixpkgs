@@ -2,9 +2,6 @@
   lib,
   alembic,
   argcomplete,
-  asgiref,
-  attrs,
-  blinker,
   buildPythonApplication,
   colorlog,
   configupdater,
@@ -12,55 +9,31 @@
   cron-descriptor,
   croniter,
   cryptography,
-  deprecated,
   dill,
   fetchFromGitHub,
   fetchYarnDeps,
-  flask,
-  flask-appbuilder,
   flask-caching,
   flask-session,
-  flask-wtf,
   fsspec,
   gitdb,
   gitpython,
-  google-re2,
   gunicorn,
   hatchling,
-  httpx,
-  itsdangerous,
-  jinja2,
-  jsonschema,
   lazy-object-proxy,
-  linkify-it-py,
   lockfile,
-  markdown-it-py,
-  markupsafe,
   marshmallow-oneofschema,
-  mdit-py-plugins,
   methodtools,
   mkYarnPackage,
-  opentelemetry-api,
-  opentelemetry-exporter-otlp,
   packaging,
   pandas,
   pathspec,
   pendulum,
   pluggy,
   psutil,
-  pygments,
-  pyjwt,
   pytest-asyncio,
   pytestCheckHook,
   python,
   python-daemon,
-  python-dateutil,
-  python-nvd3,
-  python-slugify,
-  requests,
-  requests-toolbelt,
-  rfc3339-validator,
-  rich,
   rich-argparse,
   setproctitle,
   smmap,
@@ -73,7 +46,6 @@
   tomli,
   trove-classifiers,
   universal-pathlib,
-  werkzeug,
   writeScript,
 
   # Extra airflow providers to enable
@@ -143,11 +115,12 @@ let
   providers = import ./providers.nix;
 
   # Map provider names to their actual directory paths
+  # needed for providers whose name is different from the path in providers/ directory
+  # basically for all providers located not directly in providers/ but in its child dirs
   providerMapping = {
     common_compat = "common/compat";
     common_io = "common/io";
     common_sql = "common/sql";
-    # Add other mappings if needed
   };
 
   # Helper functions to get provider information
@@ -163,13 +136,12 @@ let
     python.pkgs.buildPythonPackage {
       pname = "apache-airflow-providers-${provider}";
       version = "unstable";  # Will be extracted in the build phase
-      format = "other";  # Don't use setuptools or other build systems
+      pyproject = false;  # providers packages don't have pyproject nor setup.py
 
       src = airflow-src;
 
       propagatedBuildInputs = getProviderDeps provider;
       dependencies = [ packaging ];
-      # pythonImportsCheck = providers.${provider}.imports;
 
       buildPhase = ''
         # Extract version from the provider's __init__.py file
@@ -221,101 +193,6 @@ let
   # Map function to build all enabled providers
   providerPackages = map buildProvider enabledProviders;
 
-  task-sdk = python.pkgs.buildPythonPackage {
-    pname = "apache-airflow-task-sdk";
-    version = "unstable";  # Will be extracted in the build phase
-    format = "other";  # Don't use setuptools or other build systems
-
-    src = airflow-src;
-
-    # Common airflow provider dependencies that task SDK might need
-    # You might need to adjust these based on actual requirements
-    propagatedBuildInputs = [
-      python.pkgs.markupsafe
-      python.pkgs.jinja2
-      python.pkgs.sqlalchemy
-    ];
-
-    # Disable imports check
-    # doCheck = false;
-
-    buildPhase = ''
-      # Extract version from the task/__init__.py file
-      if [ -f "airflow/task/__init__.py" ]; then
-        version=$(grep -oP "(?<=__version__ = ')[^']+" "airflow/task/__init__.py" || echo "0.0.0")
-        echo "Task SDK version: $version"
-      else
-        # Fallback to the main airflow version
-        version="${version}"
-        echo "Using main Airflow version for task SDK: $version"
-      fi
-    '';
-
-    installPhase = ''
-      # Create directory structure
-      mkdir -p $out/${python.sitePackages}/airflow
-
-      # Create a proper airflow/__init__.py with version information
-      cat > $out/${python.sitePackages}/airflow/__init__.py <<EOF
-  # This is a minimal __init__.py to satisfy task SDK imports
-  __version__ = "${version}"
-  EOF
-
-      # Copy the task directory
-      if [ -d "airflow/task" ]; then
-        cp -r airflow/task $out/${python.sitePackages}/airflow/
-
-        # Create egg-info for package discovery
-        mkdir -p $out/${python.sitePackages}/apache_airflow_task_sdk.egg-info
-        cat > $out/${python.sitePackages}/apache_airflow_task_sdk.egg-info/PKG-INFO <<EOF
-  Metadata-Version: 2.1
-  Name: apache-airflow-task-sdk
-  Version: $version
-  Summary: Apache Airflow Task SDK
-  EOF
-      else
-        echo "Task SDK directory not found: airflow/task"
-        exit 1
-      fi
-    '';
-  };
-
-  api-fastapi = python.pkgs.buildPythonPackage {
-    pname = "apache-airflow-api-fastapi";
-    version = "unstable";
-    format = "other";
-    src = airflow-src;
-    propagatedBuildInputs = [
-      python.pkgs.fastapi
-      python.pkgs.pydantic
-    ];
-    buildPhase = ''
-      if [ -f "airflow/api/__init__.py" ]; then
-        version=$(grep -oP "(?<=__version__ = ')[^']+" "airflow/api/__init__.py" || echo "0.0.0")
-        echo "API FastAPI version: $version"
-      else
-        version="${version}"
-        echo "Using main Airflow version for API FastAPI: $version"
-      fi
-    '';
-    installPhase = ''
-      mkdir -p $out/${python.sitePackages}/airflow
-      if [ -d "airflow/api" ]; then
-        cp -r airflow/api $out/${python.sitePackages}/airflow/
-        mkdir -p $out/${python.sitePackages}/apache_airflow_api_fastapi.egg-info
-        cat > $out/${python.sitePackages}/apache_airflow_api_fastapi.egg-info/PKG-INFO <<EOF
-  Metadata-Version: 2.1
-  Name: apache-airflow-api-fastapi
-  Version: $version
-  Summary: Apache Airflow API FastAPI
-  EOF
-      else
-        echo "API FastAPI directory not found: airflow/api"
-        exit 1
-      fi
-    '';
-  };
-
 in
 buildPythonApplication rec {
   pname = "apache-airflow";
@@ -332,74 +209,44 @@ buildPythonApplication rec {
     providerPackages
     alembic
     argcomplete
-    # asgiref
-    # attrs
-    # blinker
     colorlog
-    # configupdater
+    configupdater
     connexion
     cron-descriptor
     croniter
     cryptography
-    # deprecated
+    python-daemon
     dill
-    # flask
-    # flask-appbuilder
     flask-caching
     flask-session
-    # flask-wtf
     fsspec
     gitdb
     gitpython
-    # google-re2
-    # gunicorn
-    # httpx
-    # itsdangerous
-    # jinja2
-    # jsonschema
+    gunicorn
     lazy-object-proxy
-    # linkify-it-py
     lockfile
-    # markdown-it-py
-    # markupsafe
-    # marshmallow-oneofschema
-    # mdit-py-plugins
     methodtools
-    # opentelemetry-api
-    # opentelemetry-exporter-otlp
     packaging
     pathspec
     pendulum
     pluggy
     psutil
-    # pygments
-    # pyjwt
-    # python-daemon
-    # python-dateutil
-    # python-nvd3
-    # python-slugify
-    # requests
-    # requests-toolbelt
-    # rfc3339-validator
-    # rich
     rich-argparse
-    # setproctitle
+    setproctitle
     smmap
     sqlalchemy
     sqlalchemy-jsonfield
     tabulate
     tenacity
-    # termcolor
+    termcolor
     tomli
     trove-classifiers
     universal-pathlib
-    # werkzeug
   ];
 
   nativeCheckInputs = [
     pytest-asyncio
     pytestCheckHook
-    configupdater
     marshmallow-oneofschema
   ];
 
@@ -485,8 +332,7 @@ buildPythonApplication rec {
   #   airflow standalone
   #
   # Then navigate to the localhost URL using the credentials printed, try
-  # triggering the 'example_bash_operator' and 'example_bash_operator' DAGs and
-  # see if they report success.
+  # triggering the 'example_bash_operator' DAG and see if it reports success.
 
   meta = with lib; {
     description = "Programmatically author, schedule and monitor data pipelines";
