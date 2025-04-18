@@ -242,6 +242,18 @@ let
           hash = "sha256-Kl4k3a+yDaIiWoJf4WfE/U7L8xLO9DENZ/GdxA2n3I0=";
         };
       });
+      rich = pySuper.rich.overridePythonAttrs (o: rec {
+        version = "13.9.4";
+        src = fetchPypi {
+          pname = "rich";
+          inherit version;
+          hash = "sha256-Q5WUl4pJoJUwz/frxLXHED71e69I1eoxhPIdmivvoJg=";
+        };
+        nativeBuildInputs = with pySelf; [
+          setuptools
+        ];
+        doCheck = false;
+      });
       # trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
       #   version = "2024.10.21.16";
       #   src = fetchPypi {
