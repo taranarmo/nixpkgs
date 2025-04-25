@@ -364,6 +364,8 @@ self: super: with self; {
 
   aiolimiter = callPackage ../development/python-modules/aiolimiter { };
 
+  aiologic = callPackage ../development/python-modules/aiologic { };
+
   aiolookin = callPackage ../development/python-modules/aiolookin { };
 
   aiolyric = callPackage ../development/python-modules/aiolyric { };
