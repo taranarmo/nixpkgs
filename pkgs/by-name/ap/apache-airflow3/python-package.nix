@@ -96,14 +96,14 @@
   ],
 }:
 let
-  version = "3.0.0rc2";
+  version = "3.0.1";
 
   airflow-src = fetchFromGitHub {
     owner = "apache";
     repo = "airflow";
     tag = "${version}";
     forceFetchGit = true;
-    hash = "sha256-OQfcqXMrKf+HM74MaYqiIxoM7So9tgw0+V7v2TR/m/Y=";
+    hash = "sha256-xVUsrjuW2Z0+RXiQsKnXs+/N53FnKMRHOjpiHvr+n/g=";
   };
 
   providers = import ./providers.nix;
