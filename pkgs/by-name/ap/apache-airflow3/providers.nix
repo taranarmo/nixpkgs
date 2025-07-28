@@ -157,7 +157,7 @@
     imports = [ "airflow.providers.exasol.hooks.exasol" "airflow.providers.exasol.operators.exasol" ];
   };
   fab = {
-    deps = [ "attrs" "flask" "flask-appbuilder" "flask-login" "jmespath" "connexion"];
+    deps = [ "attrs" "flask" "flask-appbuilder" "flask-login" "flask-session" "jmespath" "connexion"];
     imports = [  ];
   };
   facebook = {
