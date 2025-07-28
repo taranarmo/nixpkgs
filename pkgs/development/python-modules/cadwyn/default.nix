@@ -15,6 +15,7 @@
   dirty-equals,
   httpx,
   inline-snapshot,
+  pydantic-settings,
   pytest,
   pytest-fixture-classes,
   python-multipart,
@@ -25,14 +26,14 @@
 
 buildPythonPackage rec {
   pname = "cadwyn";
-  version = "5.1.3";
+  version = "5.4.4";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "zmievsa";
     repo = "cadwyn";
     tag = version;
-    hash = "sha256-7sVic20mBx9bYRHKlYlyQ7pQNsrsOzzFcVIRKhgm8/E=";
+    hash = "sha256-u5TNk0sATdTIEvM0Ri5U+o7/3gCG5Y+BTp3GGuBQAvE=";
   };
 
   build-system = [ hatchling ];
@@ -54,6 +55,7 @@ buildPythonPackage rec {
     dirty-equals
     httpx
     inline-snapshot
+    pydantic-settings
     pytest
     pytest-fixture-classes
     python-multipart
