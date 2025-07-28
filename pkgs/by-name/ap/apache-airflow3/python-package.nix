@@ -32,6 +32,9 @@
   pandas,
   uvicorn,
 
+  aiosqlite,
+  pydantic,
+  aiologic,
   alembic,
   argcomplete,
   asgiref,
@@ -144,6 +147,8 @@ let
     src = "${airflow-src}/task-sdk";
     build-system = [ hatchling attrs ];
     dependencies = [
+      aiologic
+      fsspec
       httpx
       jinja2
       methodtools
