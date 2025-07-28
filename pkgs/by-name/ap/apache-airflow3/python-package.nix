@@ -141,6 +141,94 @@ let
 
   providerPackages = map buildProvider enabledProviders;
 
+  airflowCore = buildPythonPackage {
+    pname = "apache-airflow-core";
+    inherit version;
+    src = "${airflow-src}/airflow-core";
+    build-system = [ hatchling ];
+    pyproject = true;
+    dependencies = [
+      gitdb
+      gitpython
+      smmap
+      marshmallow-oneofschema
+      methodtools
+      opentelemetry-api
+      opentelemetry-exporter-otlp
+      pendulum
+      psutil
+      pydantic
+      pygments
+      pyjwt
+      python-daemon
+      python-dateutil
+      python-slugify
+      requests
+      rich-argparse
+      rich
+      setproctitle
+      sqlalchemy-jsonfield
+      sqlalchemy-utils
+      sqlalchemy
+      svcs
+      tabulate
+      tenacity
+      termcolor
+      universal-pathlib
+      uuid6
+      a2wsgi
+      aiosqlite
+      alembic
+      argcomplete
+      asgiref
+      cadwyn
+      colorlog
+      cron-descriptor
+      croniter
+      cryptography
+      dill
+      fastapi
+      flask
+      gunicorn
+      httpx
+      itsdangerous
+      jinja2
+      jsonschema
+      lazy-object-proxy
+      libcst
+      linkify-it-py
+      marshmallow-oneofschema
+      methodtools
+      opentelemetry-api
+      opentelemetry-exporter-otlp
+      pendulum
+      psutil
+      pygments
+      pyjwt
+      python-daemon
+      python-dateutil
+      python-slugify
+      requests
+      requests-toolbelt
+      rfc3339-validator
+      rich-argparse
+      rich
+      setproctitle
+      sqlalchemy
+      sqlalchemy-jsonfield
+      sqlalchemy-utils
+      svcs
+      tabulate
+      tenacity
+      termcolor
+      tomli
+      trove-classifiers
+      universal-pathlib
+      uuid6
+      werkzeug
+    ] ++ providerPackages;
+  };
+
   taskSdk = buildPythonPackage {
     pname = "task-sdk";
     version = "1.0.0"; # Replace with the actual version if needed
@@ -248,6 +336,7 @@ buildPythonPackage {
       termcolor
       universal-pathlib
       werkzeug
+      airflowCore
     ];
 
   pythonRelaxDeps = [
