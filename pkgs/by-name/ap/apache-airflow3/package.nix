@@ -240,12 +240,29 @@ let
       #     hash = "sha256-4MWp9pPiUZZkjvGXzw8/gDele743NBj8uG4jvK2ohUM=";
       #   };
       # });
+      packaging = pySuper.packaging.overridePythonAttrs (o: rec {
+        version = "24.2";
+        src = fetchPypi {
+          pname = "packaging";
+          inherit version;
+          hash = "sha256-wiim3F6TLTRrxXOTeRCdSeiFPdgiNXHHxbVSYO3AuX8=";
+        };
+      });
+      pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
+        version = "1.5.0";
+        src = fetchFromGitHub {
+          owner = "pytest-dev";
+          repo = "pluggy";
+          tag = version;
+          hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
+        };
+      });
       trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
-        version = "2025.3.13.13";
+        version = "2025.3.19.19";
         src = fetchPypi {
           inherit version;
           pname = "trove_classifiers";
-          hash = "sha256-Kl4k3a+yDaIiWoJf4WfE/U7L8xLO9DENZ/GdxA2n3I0=";
+          hash = "sha256-mOnTlv6QjV9Dt0VPpMQ9F80P2t8Eb0X7OKXjr42Vns0=";
         };
       });
       rich = pySuper.rich.overridePythonAttrs (o: rec {
@@ -268,7 +285,14 @@ let
       #     hash = "sha256-F8vQVdZ9Xp2d5jKTqHMpQ/q8IVdOTHt07fEStJKM9fM=";
       #   };
       # });
-
+      pyproject-api = pySuper.pyproject-api.overridePythonAttrs (o: rec {
+        version = "1.8.0";
+        src = fetchPypi {
+          pname = "pyproject_api";
+          inherit version;
+          hash = "sha256-d7gEny/rXTPu/MIbV/HieWNid6isita1hxA3skN3hJY=";
+        };
+      });
       apache-airflow = pySelf.callPackage ./python-package.nix { };
     };
   };
