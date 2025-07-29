@@ -1,4 +1,5 @@
-#! /usr/bin/env python3
+#!/usr/bin/env nix-shell
+#!nix-shell -i python3 -p "python3.withPackages(ps: [ps.requests ps.tomli ps.pyyaml])"
 
 from itertools import chain
 import json
@@ -11,6 +12,7 @@ import sys
 from typing import Dict, List, Optional, Set, TextIO
 from urllib.request import urlopen
 from urllib.error import HTTPError
+import tomli # Changed to tomli
 import yaml
 
 PKG_SET = "apache-airflow.pythonPackages"
@@ -45,11 +47,11 @@ def get_file_from_github(version: str, path: str):
     with urlopen(
         f"https://raw.githubusercontent.com/apache/airflow/{version}/{path}"
     ) as response:
-        return yaml.safe_load(response)
+        return response.read()
 
 
 def repository_root() -> Path:
-    return Path(os.path.dirname(sys.argv[0])) / "../../../.."
+    return Path(os.path.dirname(sys.argv[0])) / "../../../../"
 
 
 def dump_packages() -> Dict[str, Dict[str, str]]:
@@ -143,19 +145,65 @@ def get_cross_provider_reqs(
     return reqs
 
 
-def get_provider_reqs(version: str, packages: Dict) -> Dict:
-    provider_dependencies = get_file_from_github(
-        version, "generated/provider_dependencies.json"
-    )
+def parse_pyproject_toml(version: str, provider_name: str) -> Dict:
+    provider_dir = provider_name.replace(".", "/")
+    path = f"providers/{provider_dir}/pyproject.toml"
+    try:
+        content = get_file_from_github(version, path)
+        data = tomli.loads(content.decode('utf-8'))
+        
+        dependencies = data.get('project', {}).get('dependencies', [])
+        
+        # Extract optional dependencies
+        optional_dependencies = data.get('project', {}).get('optional-dependencies', {})
+        for opt_deps_list in optional_dependencies.values():
+            dependencies.extend(opt_deps_list)
+
+        imports = []
+        # Heuristic to generate imports based on provider name
+        # This might not be exhaustive but covers common cases
+        base_import_path = f"airflow.providers.{provider_name.replace('-', '.')}"
+        # Add common hook and operator imports
+        imports.append(f"{base_import_path}.hooks.{provider_name.split('_')[-1]}")
+        imports.append(f"{base_import_path}.operators.{provider_name.split('_')[-1]}")
+
+        # Try to get more specific imports from provider_info entry point if available
+        provider_info_entry_point = data.get('project', {}).get('entry-points', {}).get('apache_airflow_provider', {}).get('provider_info')
+        if provider_info_entry_point:
+            module_path = provider_info_entry_point.split(':')[0]
+            if module_path not in imports:
+                imports.append(module_path)
+
+        return {
+            "deps": dependencies,
+            "imports": sorted(list(set(imports))), # Remove duplicates and sort
+            "cross-providers-deps": [] # pyproject.toml doesn't directly list cross-provider deps
+        }
+    except HTTPError:
+        logging.warning("Couldn't get pyproject.toml for %s", provider_name)
+        return {"deps": [], "imports": [], "cross-providers-deps": []}
+    except Exception as e:
+        logging.error(f"Error parsing pyproject.toml for {provider_name}: {e}")
+        return {"deps": [], "imports": [], "cross-providers-deps": []}
+
+
+def get_provider_reqs(version: str, packages: Dict, provider_names: List[str]) -> Dict:
+    provider_data = {}
+    for provider in provider_names:
+        data = parse_pyproject_toml(version, provider)
+        provider_data[provider] = {
+            "deps": data["deps"],
+            "cross-providers-deps": data["cross-providers-deps"]
+        }
+
     provider_reqs = {}
     cross_provider_deps = {}
-    for provider, provider_data in provider_dependencies.items():
+    for provider, data in provider_data.items():
         provider_reqs[provider] = list(
-            provider_reqs_to_attr_paths(provider_data["deps"], packages)
+            provider_reqs_to_attr_paths(data["deps"], packages)
         ) + EXTRA_REQS.get(provider, [])
-        cross_provider_deps[provider] = [
-            d for d in provider_data["cross-providers-deps"] if d != "common.sql"
-        ]
+        cross_provider_deps[provider] = data["cross-providers-deps"]
+
     transitive_provider_reqs = {}
     # Add transitive cross-provider reqs
     for provider in provider_reqs:
@@ -165,35 +213,11 @@ def get_provider_reqs(version: str, packages: Dict) -> Dict:
     return transitive_provider_reqs
 
 
-def get_provider_yaml(version: str, provider: str) -> Dict:
-    provider_dir = provider.replace(".", "/")
-    path = f"providers/{provider_dir}/provider.yaml"
-    try:
-        return get_file_from_github(version, path)
-    except HTTPError:
-        logging.warning("Couldn't get provider yaml for %s", provider)
-        return {}
-
-
-def get_provider_imports(version: str, providers) -> Dict:
+def get_provider_imports(version: str, provider_names: List[str]) -> Dict:
     provider_imports = {}
-    for provider in providers:
-        provider_yaml = get_provider_yaml(version, provider)
-        imports: List[str] = []
-        if "hooks" in provider_yaml:
-            imports.extend(
-                chain.from_iterable(
-                    hook["python-modules"] for hook in provider_yaml["hooks"]
-                )
-            )
-        if "operators" in provider_yaml:
-            imports.extend(
-                chain.from_iterable(
-                    operator["python-modules"]
-                    for operator in provider_yaml["operators"]
-                )
-            )
-        provider_imports[provider] = imports
+    for provider in provider_names:
+        data = parse_pyproject_toml(version, provider)
+        provider_imports[provider] = data["imports"]
     return provider_imports
 
 
@@ -204,11 +228,11 @@ def to_nix_expr(provider_reqs: Dict, provider_imports: Dict, fh: TextIO) -> None
         provider_name = provider.replace(".", "_")
         fh.write(f"  {provider_name} = {{\n")
         fh.write(
-            "    deps = [ " + " ".join(sorted(f'"{req}"' for req in reqs)) + " ];\n"
+            "    deps = [ " + " ".join(sorted(f'\"{req}\"' for req in reqs)) + " ];\n"
         )
         fh.write(
             "    imports = [ "
-            + " ".join(sorted(f'"{imp}"' for imp in provider_imports[provider]))
+            + " ".join(sorted(f'\"{imp}\"' for imp in provider_imports[provider]))
             + " ];\n"
         )
         fh.write("  };\n")
@@ -220,8 +244,19 @@ def main() -> None:
     version = get_version()
     packages = dump_packages()
     logging.info("Generating providers.nix for version %s", version)
-    provider_reqs = get_provider_reqs(version, packages)
-    provider_imports = get_provider_imports(version, provider_reqs.keys())
+
+    # Fetch provider names from GitHub API
+    try:
+        with urlopen(f"https://api.github.com/repos/apache/airflow/contents/providers?ref={version}") as response:
+            providers_json = json.loads(response.read())
+        # Filter out non-directory items and specific directories like 'apache', 'common', 'git', 'tests'
+        provider_names = [item["name"] for item in providers_json if item["type"] == "dir" and item["name"] not in ["apache", "common", "git", "tests"]]
+    except HTTPError as e:
+        logging.error(f"Error fetching provider list from GitHub: {e}")
+        sys.exit(1)
+
+    provider_reqs = get_provider_reqs(version, packages, provider_names)
+    provider_imports = get_provider_imports(version, provider_names)
     with open("providers.nix", "w") as fh:
         to_nix_expr(provider_reqs, provider_imports, fh)
 
