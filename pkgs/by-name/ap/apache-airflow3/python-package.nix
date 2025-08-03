@@ -264,6 +264,15 @@ buildPythonPackage {
   pyproject = true;
   build-system = [ hatchling ];
 
+  patches = [
+    # fixes issue with Airflow 3.0.3, this commit is already in main but not in 3.0.3
+    (fetchpatch {
+      url = "https://github.com/apache/airflow/commit/5f07ae13260068f48f4b3e35502755b593e82b4c.patch";
+      hash = "";
+      }
+    )
+  ];
+
   dependencies = [
     cadwyn
     svcs
