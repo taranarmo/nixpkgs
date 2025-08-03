@@ -169,15 +169,15 @@ let
       ## https://github.com/apache/airflow/issues/28723
       sqlalchemy = pySuper.sqlalchemy_1_4;
 
-      # gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
-      #   version = "3.1.44";
-      #   src = fetchFromGitHub {
-      #     owner = "gitpython-developers";
-      #     repo = "GitPython";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-KnKaBv/tKk4wiGWUWCEgd1vgrTouwUhqxJ1/nMjRaWk=";
-      #   };
-      # });
+      gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
+        version = "3.1.44";
+        src = fetchFromGitHub {
+          owner = "gitpython-developers";
+          repo = "GitPython";
+          rev = "refs/tags/${version}";
+          hash = "sha256-KnKaBv/tKk4wiGWUWCEgd1vgrTouwUhqxJ1/nMjRaWk=";
+        };
+      });
       gitdb = pySuper.gitdb.overridePythonAttrs (o: rec {
         version = "4.0.12";
         src = fetchFromGitHub {
@@ -187,41 +187,41 @@ let
           hash = "sha256-24nOiKHmrhdF0BAmx+1AxaDy8C+qlNFvpuZUyU+tMFU=";
         };
       });
-      # hatchling = pySuper.hatchling.overridePythonAttrs (o: rec {
-      #   pname = "hatchling";
-      #   version = "1.27.0";
-      #   src = fetchPypi {
-      #     inherit pname version;
-      #     hash = "sha256-lxwpbZgZq7OBERL8UsepdRyNOBiY82Uzuxb5eR6UH9Y=";
-      #   };
-      # });
-      # packaging = pySuper.packaging.overridePythonAttrs (o: rec {
-      #   version = "24.2";
-      #   src = fetchFromGitHub {
-      #     owner = "pypa";
-      #     repo = "packaging";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-7B/d9AG6D8CULM+Ut7g5MogEiXtvVgGvsu3comHHoos=";
-      #   };
-      # });
-      # pathspec = pySuper.pathspec.overridePythonAttrs (o: rec {
-      #   version = "0.12.1";
-      #   src = fetchFromGitHub {
-      #     owner = "cpburnz";
-      #     repo = "python-pathspec";
-      #     rev = "refs/tags/v${version}";
-      #     hash = "sha256-jv6uCN94LRfDy+583omvgmL96D2GcF8WhAM8V9ezH/0=";
-      #   };
-      # });
-      # pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
-      #   version = "1.5.0";
-      #   src = fetchFromGitHub {
-      #     owner = "pytest-dev";
-      #     repo = "pluggy";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
-      #   };
-      # });
+      hatchling = pySuper.hatchling.overridePythonAttrs (o: rec {
+        pname = "hatchling";
+        version = "1.27.0";
+        src = fetchPypi {
+          inherit pname version;
+          hash = "sha256-lxwpbZgZq7OBERL8UsepdRyNOBiY82Uzuxb5eR6UH9Y=";
+        };
+      });
+      packaging = pySuper.packaging.overridePythonAttrs (o: rec {
+        version = "25.0";
+        src = fetchFromGitHub {
+          owner = "pypa";
+          repo = "packaging";
+          rev = "refs/tags/${version}";
+          hash = "sha256-7B/d9AG6D8CULM+Ut7g5MogEiXtvVgGvsu3comHHoos=";
+        };
+      });
+      pathspec = pySuper.pathspec.overridePythonAttrs (o: rec {
+        version = "0.12.1";
+        src = fetchFromGitHub {
+          owner = "cpburnz";
+          repo = "python-pathspec";
+          rev = "refs/tags/v${version}";
+          hash = "sha256-jv6uCN94LRfDy+583omvgmL96D2GcF8WhAM8V9ezH/0=";
+        };
+      });
+      pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
+        version = "1.5.0";
+        src = fetchFromGitHub {
+          owner = "pytest-dev";
+          repo = "pluggy";
+          rev = "refs/tags/${version}";
+          hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
+        };
+      });
       smmap = pySuper.smmap.overridePythonAttrs (o: rec {
         version = "5.0.2";
         src = fetchFromGitHub {
@@ -240,23 +240,6 @@ let
       #     hash = "sha256-4MWp9pPiUZZkjvGXzw8/gDele743NBj8uG4jvK2ohUM=";
       #   };
       # });
-      packaging = pySuper.packaging.overridePythonAttrs (o: rec {
-        version = "24.2";
-        src = fetchPypi {
-          pname = "packaging";
-          inherit version;
-          hash = "sha256-wiim3F6TLTRrxXOTeRCdSeiFPdgiNXHHxbVSYO3AuX8=";
-        };
-      });
-      pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
-        version = "1.5.0";
-        src = fetchFromGitHub {
-          owner = "pytest-dev";
-          repo = "pluggy";
-          tag = version;
-          hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
-        };
-      });
       trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
         version = "2025.3.19.19";
         src = fetchPypi {

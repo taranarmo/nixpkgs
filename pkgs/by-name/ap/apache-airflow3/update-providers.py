@@ -39,7 +39,7 @@ EXTRA_REQS = {
 def get_version():
     with open(os.path.dirname(sys.argv[0]) + "/python-package.nix") as fh:
         # A version consists of digits, dots, and possibly a "b" (for beta)
-        m = re.search('version = "([\\d\\.b]+)";', fh.read())
+        m = re.search(r'version = "([\d.b]+)";', fh.read())
         return m.group(1)
 
 
@@ -93,7 +93,7 @@ def name_to_attr_path(req: str, packages: Dict[str, Dict[str, str]]) -> Optional
         # we need the version qualifier, or we'll have multiple matches
         # (e.g. pyserial and pyserial-asyncio when looking for pyserial)
         pattern = re.compile(
-            f"^python\\d+\\.\\d+-{name}-(?:\\d|unstable-.*)", re.I
+            rf"^python\d+\.\d+-{name}-(?:[\d\.]+|unstable-.*)", re.I
         )
         for attr_path, package in packages.items():
             # logging.debug("Checking match for %s with %s", name, package["name"])
@@ -239,6 +239,50 @@ def to_nix_expr(provider_reqs: Dict, provider_imports: Dict, fh: TextIO) -> None
     fh.write("}\n")
 
 
+def get_all_providers_from_github(version: str) -> List[str]:
+    """
+    Fetches all provider paths that contain a pyproject.toml file from the airflow repository.
+    This is done by recursively fetching the git tree for the providers directory.
+    """
+    providers = []
+    try:
+        # Get the SHA of the 'providers' directory for the given version
+        with urlopen(f"https://api.github.com/repos/apache/airflow/contents/?ref={version}") as response:
+            root_contents = json.loads(response.read())
+
+        providers_dir_info = next((item for item in root_contents if item["name"] == "providers" and item["type"] == "dir"), None)
+
+        if not providers_dir_info:
+            logging.error("Could not find 'providers' directory in the root of the repository.")
+            sys.exit(1)
+
+        providers_dir_sha = providers_dir_info["sha"]
+
+        # Now, get the tree for the 'providers' directory recursively
+        with urlopen(f"https://api.github.com/repos/apache/airflow/git/trees/{providers_dir_sha}?recursive=1") as response:
+            tree = json.loads(response.read())
+
+        pyproject_paths = [
+            item["path"]
+            for item in tree["tree"]
+            if item["type"] == "blob" and item["path"].endswith("/pyproject.toml")
+        ]
+
+        for path in pyproject_paths:
+            # remove /pyproject.toml suffix
+            provider_path = path[: -len("/pyproject.toml")]
+            # Exclude tests directory and empty paths (root pyproject.toml)
+            if provider_path and not provider_path.startswith("tests/"):
+                provider_name = provider_path.replace("/", ".")
+                providers.append(provider_name)
+
+    except HTTPError as e:
+        logging.error(f"Error fetching provider list from GitHub: {e}")
+        sys.exit(1)
+
+    return sorted(providers)
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO)
     version = get_version()
@@ -246,14 +290,7 @@ def main() -> None:
     logging.info("Generating providers.nix for version %s", version)
 
     # Fetch provider names from GitHub API
-    try:
-        with urlopen(f"https://api.github.com/repos/apache/airflow/contents/providers?ref={version}") as response:
-            providers_json = json.loads(response.read())
-        # Filter out non-directory items and specific directories like 'apache', 'common', 'git', 'tests'
-        provider_names = [item["name"] for item in providers_json if item["type"] == "dir" and item["name"] not in ["apache", "common", "git", "tests"]]
-    except HTTPError as e:
-        logging.error(f"Error fetching provider list from GitHub: {e}")
-        sys.exit(1)
+    provider_names = get_all_providers_from_github(version)
 
     provider_reqs = get_provider_reqs(version, packages, provider_names)
     provider_imports = get_provider_imports(version, provider_names)

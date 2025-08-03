@@ -12,6 +12,66 @@
     deps = [ "asgiref" "boto3" "botocore" "inflection" "jmespath" "jsonpath-ng" "lxml" "pandas" "pyathena" "python3-saml" "redshift-connector" "s3fs" ];
     imports = [ "airflow.providers.amazon.get_provider_info" "airflow.providers.amazon.hooks.amazon" "airflow.providers.amazon.operators.amazon" ];
   };
+  apache_beam = {
+    deps = [ "apache-beam" "numpy" "pyarrow" ];
+    imports = [ "airflow.providers.apache.beam.get_provider_info" "airflow.providers.apache.beam.hooks.apache.beam" "airflow.providers.apache.beam.operators.apache.beam" ];
+  };
+  apache_cassandra = {
+    deps = [ "cassandra-driver" ];
+    imports = [ "airflow.providers.apache.cassandra.get_provider_info" "airflow.providers.apache.cassandra.hooks.apache.cassandra" "airflow.providers.apache.cassandra.operators.apache.cassandra" ];
+  };
+  apache_drill = {
+    deps = [  ];
+    imports = [ "airflow.providers.apache.drill.get_provider_info" "airflow.providers.apache.drill.hooks.apache.drill" "airflow.providers.apache.drill.operators.apache.drill" ];
+  };
+  apache_druid = {
+    deps = [ "pydruid" ];
+    imports = [ "airflow.providers.apache.druid.get_provider_info" "airflow.providers.apache.druid.hooks.apache.druid" "airflow.providers.apache.druid.operators.apache.druid" ];
+  };
+  apache_flink = {
+    deps = [ "cryptography" ];
+    imports = [ "airflow.providers.apache.flink.get_provider_info" "airflow.providers.apache.flink.hooks.apache.flink" "airflow.providers.apache.flink.operators.apache.flink" ];
+  };
+  apache_hdfs = {
+    deps = [ "pandas" ];
+    imports = [ "airflow.providers.apache.hdfs.get_provider_info" "airflow.providers.apache.hdfs.hooks.apache.hdfs" "airflow.providers.apache.hdfs.operators.apache.hdfs" ];
+  };
+  apache_hive = {
+    deps = [ "jmespath" "pandas" "thrift" ];
+    imports = [ "airflow.providers.apache.hive.get_provider_info" "airflow.providers.apache.hive.hooks.apache.hive" "airflow.providers.apache.hive.operators.apache.hive" ];
+  };
+  apache_iceberg = {
+    deps = [  ];
+    imports = [ "airflow.providers.apache.iceberg.get_provider_info" "airflow.providers.apache.iceberg.hooks.apache.iceberg" "airflow.providers.apache.iceberg.operators.apache.iceberg" ];
+  };
+  apache_impala = {
+    deps = [ "kerberos" ];
+    imports = [ "airflow.providers.apache.impala.get_provider_info" "airflow.providers.apache.impala.hooks.apache.impala" "airflow.providers.apache.impala.operators.apache.impala" ];
+  };
+  apache_kafka = {
+    deps = [ "asgiref" "confluent-kafka" ];
+    imports = [ "airflow.providers.apache.kafka.get_provider_info" "airflow.providers.apache.kafka.hooks.apache.kafka" "airflow.providers.apache.kafka.operators.apache.kafka" ];
+  };
+  apache_kylin = {
+    deps = [  ];
+    imports = [ "airflow.providers.apache.kylin.get_provider_info" "airflow.providers.apache.kylin.hooks.apache.kylin" "airflow.providers.apache.kylin.operators.apache.kylin" ];
+  };
+  apache_livy = {
+    deps = [ "aiohttp" "asgiref" ];
+    imports = [ "airflow.providers.apache.livy.get_provider_info" "airflow.providers.apache.livy.hooks.apache.livy" "airflow.providers.apache.livy.operators.apache.livy" ];
+  };
+  apache_pig = {
+    deps = [  ];
+    imports = [ "airflow.providers.apache.pig.get_provider_info" "airflow.providers.apache.pig.hooks.apache.pig" "airflow.providers.apache.pig.operators.apache.pig" ];
+  };
+  apache_pinot = {
+    deps = [  ];
+    imports = [ "airflow.providers.apache.pinot.get_provider_info" "airflow.providers.apache.pinot.hooks.apache.pinot" "airflow.providers.apache.pinot.operators.apache.pinot" ];
+  };
+  apache_spark = {
+    deps = [ "grpcio-status" "pyspark" ];
+    imports = [ "airflow.providers.apache.spark.get_provider_info" "airflow.providers.apache.spark.hooks.apache.spark" "airflow.providers.apache.spark.operators.apache.spark" ];
+  };
   apprise = {
     deps = [ "apprise" ];
     imports = [ "airflow.providers.apprise.get_provider_info" "airflow.providers.apprise.hooks.apprise" "airflow.providers.apprise.operators.apprise" ];
@@ -24,9 +84,9 @@
     deps = [ "asana" ];
     imports = [ "airflow.providers.asana.get_provider_info" "airflow.providers.asana.hooks.asana" "airflow.providers.asana.operators.asana" ];
   };
-  atlassian = {
-    deps = [  ];
-    imports = [  ];
+  atlassian_jira = {
+    deps = [ "atlassian-python-api" ];
+    imports = [ "airflow.providers.atlassian.jira.get_provider_info" "airflow.providers.atlassian.jira.hooks.atlassian.jira" "airflow.providers.atlassian.jira.operators.atlassian.jira" ];
   };
   celery = {
     deps = [ "flower" ];
@@ -36,13 +96,29 @@
     deps = [  ];
     imports = [ "airflow.providers.cloudant.get_provider_info" "airflow.providers.cloudant.hooks.cloudant" "airflow.providers.cloudant.operators.cloudant" ];
   };
-  cncf = {
-    deps = [  ];
-    imports = [  ];
+  cncf_kubernetes = {
+    deps = [ "aiofiles" "asgiref" "cryptography" "kubernetes" "kubernetes-asyncio" ];
+    imports = [ "airflow.providers.cncf.kubernetes.get_provider_info" "airflow.providers.cncf.kubernetes.hooks.cncf.kubernetes" "airflow.providers.cncf.kubernetes.operators.cncf.kubernetes" ];
   };
   cohere = {
     deps = [ "cohere" ];
     imports = [ "airflow.providers.cohere.get_provider_info" "airflow.providers.cohere.hooks.cohere" "airflow.providers.cohere.operators.cohere" ];
+  };
+  common_compat = {
+    deps = [  ];
+    imports = [ "airflow.providers.common.compat.get_provider_info" "airflow.providers.common.compat.hooks.common.compat" "airflow.providers.common.compat.operators.common.compat" ];
+  };
+  common_io = {
+    deps = [  ];
+    imports = [ "airflow.providers.common.io.get_provider_info" "airflow.providers.common.io.hooks.common.io" "airflow.providers.common.io.operators.common.io" ];
+  };
+  common_messaging = {
+    deps = [  ];
+    imports = [ "airflow.providers.common.messaging.get_provider_info" "airflow.providers.common.messaging.hooks.common.messaging" "airflow.providers.common.messaging.operators.common.messaging" ];
+  };
+  common_sql = {
+    deps = [ "methodtools" "more-itertools" "pandas" "polars" "sqlparse" ];
+    imports = [ "airflow.providers.common.sql.get_provider_info" "airflow.providers.common.sql.hooks.common.sql" "airflow.providers.common.sql.operators.common.sql" ];
   };
   databricks = {
     deps = [ "aiohttp" "azure-identity" "databricks-sdk" "databricks-sql-connector" "mergedeep" "pandas" "pyarrow" "requests" ];
@@ -52,9 +128,9 @@
     deps = [ "datadog" ];
     imports = [ "airflow.providers.datadog.get_provider_info" "airflow.providers.datadog.hooks.datadog" "airflow.providers.datadog.operators.datadog" ];
   };
-  dbt = {
-    deps = [  ];
-    imports = [  ];
+  dbt_cloud = {
+    deps = [ "aiohttp" "asgiref" ];
+    imports = [ "airflow.providers.dbt.cloud.get_provider_info" "airflow.providers.dbt.cloud.hooks.dbt.cloud" "airflow.providers.dbt.cloud.operators.dbt.cloud" ];
   };
   dingding = {
     deps = [  ];
@@ -92,6 +168,10 @@
     deps = [  ];
     imports = [ "airflow.providers.ftp.get_provider_info" "airflow.providers.ftp.hooks.ftp" "airflow.providers.ftp.operators.ftp" ];
   };
+  git = {
+    deps = [ "gitpython" ];
+    imports = [ "airflow.providers.git.get_provider_info" "airflow.providers.git.hooks.git" "airflow.providers.git.operators.git" ];
+  };
   github = {
     deps = [ "pygithub" ];
     imports = [ "airflow.providers.github.get_provider_info" "airflow.providers.github.hooks.github" "airflow.providers.github.operators.github" ];
@@ -128,9 +208,21 @@
     deps = [ "python-jenkins" ];
     imports = [ "airflow.providers.jenkins.get_provider_info" "airflow.providers.jenkins.hooks.jenkins" "airflow.providers.jenkins.operators.jenkins" ];
   };
-  microsoft = {
-    deps = [  ];
-    imports = [  ];
+  microsoft_azure = {
+    deps = [ "adal" "adlfs" "azure-batch" "azure-cosmos" "azure-datalake-store" "azure-identity" "azure-keyvault-secrets" "azure-kusto-data" "azure-mgmt-containerinstance" "azure-mgmt-containerregistry" "azure-mgmt-cosmosdb" "azure-mgmt-datafactory" "azure-mgmt-datalake-store" "azure-mgmt-resource" "azure-mgmt-storage" "azure-servicebus" "azure-storage-blob" "azure-storage-file-datalake" "azure-storage-file-share" "azure-synapse-artifacts" "azure-synapse-spark" "flask-appbuilder" "microsoft-kiota-abstractions" "microsoft-kiota-authentication-azure" "microsoft-kiota-http" "microsoft-kiota-serialization-json" "microsoft-kiota-serialization-text" "msal-extensions" "msgraph-core" ];
+    imports = [ "airflow.providers.microsoft.azure.get_provider_info" "airflow.providers.microsoft.azure.hooks.microsoft.azure" "airflow.providers.microsoft.azure.operators.microsoft.azure" ];
+  };
+  microsoft_mssql = {
+    deps = [ "methodtools" "pymssql" ];
+    imports = [ "airflow.providers.microsoft.mssql.get_provider_info" "airflow.providers.microsoft.mssql.hooks.microsoft.mssql" "airflow.providers.microsoft.mssql.operators.microsoft.mssql" ];
+  };
+  microsoft_psrp = {
+    deps = [ "pypsrp" ];
+    imports = [ "airflow.providers.microsoft.psrp.get_provider_info" "airflow.providers.microsoft.psrp.hooks.microsoft.psrp" "airflow.providers.microsoft.psrp.operators.microsoft.psrp" ];
+  };
+  microsoft_winrm = {
+    deps = [ "pywinrm" ];
+    imports = [ "airflow.providers.microsoft.winrm.get_provider_info" "airflow.providers.microsoft.winrm.hooks.microsoft.winrm" "airflow.providers.microsoft.winrm.operators.microsoft.winrm" ];
   };
   mongo = {
     deps = [ "dnspython" "pymongo" ];

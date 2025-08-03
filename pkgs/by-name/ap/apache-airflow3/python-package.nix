@@ -99,14 +99,14 @@
   ],
 }:
 let
-  version = "3.0.0rc2";
+  version = "3.0.3";
 
   airflow-src = fetchFromGitHub {
     owner = "apache";
     repo = "airflow";
     tag = "${version}";
     forceFetchGit = true;
-    hash = "sha256-OQfcqXMrKf+HM74MaYqiIxoM7So9tgw0+V7v2TR/m/Y=";
+    hash = "sha256-G+lEFHm3qZR7BID8p4S42JC65yt3myWUHQkNy+OmKf8=";
   };
 
   providers = import ./providers.nix;
@@ -375,7 +375,16 @@ buildPythonPackage {
 
   passthru.updateScript = writeScript "update.sh" ''
     #!/usr/bin/env nix-shell
-    ./update-providers.py
+    #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
+
+    set -euo pipefail
+
+    # Get new version
+    new_version="$(curl -s https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html |
+      pcregrep -o1 'Airflow ([0-9.]+).' | head -1)"
+    update-source-version apache-airflow3 "$new_version"
+
+    ./update-providers.py ${airflow-src}
   '';
 
   meta = with lib; {
