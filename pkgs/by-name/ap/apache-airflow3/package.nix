@@ -241,11 +241,11 @@ let
       #   };
       # });
       trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
-        version = "2025.3.19.19";
+        version = "2025.5.9.12";
         src = fetchPypi {
           inherit version;
           pname = "trove_classifiers";
-          hash = "sha256-mOnTlv6QjV9Dt0VPpMQ9F80P2t8Eb0X7OKXjr42Vns0=";
+          hash = "sha256-fKfIp6duLNMURoxnfGnRLMI1dxH8q0pg+HmUwVieXLU=";
         };
       });
       rich = pySuper.rich.overridePythonAttrs (o: rec {
@@ -260,14 +260,6 @@ let
         ];
         doCheck = false;
       });
-      # trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
-      #   version = "2024.10.21.16";
-      #   src = fetchPypi {
-      #     pname = "trove_classifiers";
-      #     inherit version;
-      #     hash = "sha256-F8vQVdZ9Xp2d5jKTqHMpQ/q8IVdOTHt07fEStJKM9fM=";
-      #   };
-      # });
       pyproject-api = pySuper.pyproject-api.overridePythonAttrs (o: rec {
         version = "1.8.0";
         src = fetchPypi {

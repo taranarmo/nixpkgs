@@ -4,6 +4,7 @@
   python,
   buildPythonPackage,
   fetchFromGitHub,
+  fetchpatch,
   hatchling,
   gitpython,
   gitdb,
@@ -147,6 +148,10 @@ let
     src = "${airflow-src}/airflow-core";
     build-system = [ hatchling ];
     pyproject = true;
+    postPatch = ''
+      substituteInPlace airflow-core/pyproject.toml \
+      --replace-fail "trove-classifiers==2025.4.11.15" "trove-classifiers==2025.5.9.12"
+    '';
     dependencies = [
       gitdb
       gitpython
@@ -234,6 +239,7 @@ let
     version = "1.0.0"; # Replace with the actual version if needed
     src = "${airflow-src}/task-sdk";
     build-system = [ hatchling attrs ];
+
     dependencies = [
       aiologic
       fsspec
