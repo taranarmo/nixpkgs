@@ -9,7 +9,7 @@
     imports = [ "airflow.providers.alibaba.get_provider_info" "airflow.providers.alibaba.hooks.alibaba" "airflow.providers.alibaba.operators.alibaba" ];
   };
   amazon = {
-    deps = [ "asgiref" "boto3" "botocore" "inflection" "jmespath" "jsonpath-ng" "lxml" "pandas" "pyathena" "python3-saml" "redshift-connector" "s3fs" ];
+    deps = [ "aiobotocore" "asgiref" "boto3" "botocore" "inflection" "jmespath" "jsonpath-ng" "lxml" "pandas" "pyathena" "python3-saml" "redshift-connector" "s3fs" "xmlsec" ];
     imports = [ "airflow.providers.amazon.get_provider_info" "airflow.providers.amazon.hooks.amazon" "airflow.providers.amazon.operators.amazon" ];
   };
   apache_beam = {
@@ -33,7 +33,7 @@
     imports = [ "airflow.providers.apache.flink.get_provider_info" "airflow.providers.apache.flink.hooks.apache.flink" "airflow.providers.apache.flink.operators.apache.flink" ];
   };
   apache_hdfs = {
-    deps = [ "pandas" ];
+    deps = [ "hdfs" "pandas" ];
     imports = [ "airflow.providers.apache.hdfs.get_provider_info" "airflow.providers.apache.hdfs.hooks.apache.hdfs" "airflow.providers.apache.hdfs.operators.apache.hdfs" ];
   };
   apache_hive = {
@@ -89,7 +89,7 @@
     imports = [ "airflow.providers.atlassian.jira.get_provider_info" "airflow.providers.atlassian.jira.hooks.atlassian.jira" "airflow.providers.atlassian.jira.operators.atlassian.jira" ];
   };
   celery = {
-    deps = [ "flower" ];
+    deps = [ "celery" "flower" ];
     imports = [ "airflow.providers.celery.get_provider_info" "airflow.providers.celery.hooks.celery" "airflow.providers.celery.operators.celery" ];
   };
   cloudant = {
@@ -157,7 +157,7 @@
     imports = [ "airflow.providers.exasol.get_provider_info" "airflow.providers.exasol.hooks.exasol" "airflow.providers.exasol.operators.exasol" ];
   };
   fab = {
-    deps = [ "blinker" "flask" "flask-appbuilder" "flask-login" "flask-session" "flask-wtf" "jmespath" "kerberos" "werkzeug" "wtforms" ];
+    deps = [ "blinker" "connexion" "flask" "flask-appbuilder" "flask-login" "flask-session" "flask-wtf" "jmespath" "kerberos" "werkzeug" "wtforms" ];
     imports = [ "airflow.providers.fab.get_provider_info" "airflow.providers.fab.hooks.fab" "airflow.providers.fab.operators.fab" ];
   };
   facebook = {
@@ -177,7 +177,7 @@
     imports = [ "airflow.providers.github.get_provider_info" "airflow.providers.github.hooks.github" "airflow.providers.github.operators.github" ];
   };
   google = {
-    deps = [ "asgiref" "dill" "gcsfs" "google-api-core" "google-api-python-client" "google-auth" "google-auth-httplib2" "google-cloud-automl" "google-cloud-bigquery" "google-cloud-bigquery-datatransfer" "google-cloud-bigquery-storage" "google-cloud-bigtable" "google-cloud-compute" "google-cloud-container" "google-cloud-datacatalog" "google-cloud-dataproc" "google-cloud-dlp" "google-cloud-kms" "google-cloud-language" "google-cloud-logging" "google-cloud-monitoring" "google-cloud-pubsub" "google-cloud-redis" "google-cloud-secret-manager" "google-cloud-spanner" "google-cloud-speech" "google-cloud-storage" "google-cloud-tasks" "google-cloud-texttospeech" "google-cloud-translate" "google-cloud-videointelligence" "google-cloud-vision" "google-cloud-workflows" "grpcio-gcp" "httpx" "immutabledict" "pandas" "plyvel" "proto-plus" "pyarrow" "pyopenssl" "python-slugify" "tenacity" ];
+    deps = [ "apache-beam" "asgiref" "dill" "gcsfs" "google-api-core" "google-api-python-client" "google-auth" "google-auth-httplib2" "google-cloud-automl" "google-cloud-bigquery" "google-cloud-bigquery-datatransfer" "google-cloud-bigquery-storage" "google-cloud-bigtable" "google-cloud-compute" "google-cloud-container" "google-cloud-datacatalog" "google-cloud-dataproc" "google-cloud-dlp" "google-cloud-kms" "google-cloud-language" "google-cloud-logging" "google-cloud-monitoring" "google-cloud-pubsub" "google-cloud-redis" "google-cloud-secret-manager" "google-cloud-spanner" "google-cloud-speech" "google-cloud-storage" "google-cloud-tasks" "google-cloud-texttospeech" "google-cloud-translate" "google-cloud-videointelligence" "google-cloud-vision" "google-cloud-workflows" "grpcio-gcp" "httpx" "immutabledict" "pandas" "plyvel" "proto-plus" "pyarrow" "pyopenssl" "python-slugify" "ray" "tenacity" "types-protobuf" ];
     imports = [ "airflow.providers.google.get_provider_info" "airflow.providers.google.hooks.google" "airflow.providers.google.operators.google" ];
   };
   grpc = {
@@ -241,7 +241,7 @@
     imports = [ "airflow.providers.odbc.get_provider_info" "airflow.providers.odbc.hooks.odbc" "airflow.providers.odbc.operators.odbc" ];
   };
   openai = {
-    deps = [  ];
+    deps = [ "openai" ];
     imports = [ "airflow.providers.openai.get_provider_info" "airflow.providers.openai.hooks.openai" "airflow.providers.openai.operators.openai" ];
   };
   openfaas = {
@@ -269,7 +269,7 @@
     imports = [ "airflow.providers.pagerduty.get_provider_info" "airflow.providers.pagerduty.hooks.pagerduty" "airflow.providers.pagerduty.operators.pagerduty" ];
   };
   papermill = {
-    deps = [ "ipykernel" "nbconvert" "pandas" ];
+    deps = [ "ipykernel" "nbconvert" "pandas" "papermill" ];
     imports = [ "airflow.providers.papermill.get_provider_info" "airflow.providers.papermill.hooks.papermill" "airflow.providers.papermill.operators.papermill" ];
   };
   pgvector = {

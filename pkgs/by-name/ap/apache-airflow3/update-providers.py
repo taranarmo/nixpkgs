@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i python3 -p "python3.withPackages(ps: [ps.requests ps.tomli ps.pyyaml])"
+#!nix-shell -i python3 -p "python3.withPackages(ps: [ps.requests ps.tomli ps.pyyaml ps.packaging])"
 
 from itertools import chain
 import json
@@ -73,19 +73,30 @@ def dump_packages() -> Dict[str, Dict[str, str]]:
     return json.loads(output)
 
 
+from packaging.requirements import Requirement
+
+
 def remove_version_constraint(req: str) -> str:
-    return re.sub(r"[=><~].*$", "", req)
+    parsed_req = Requirement(req)
+    name = parsed_req.name
+    extras = ",".join(sorted(parsed_req.extras))
+    if extras:
+        return f"{name}[{extras}]"
+    return name
 
 
 def name_to_attr_path(req: str, packages: Dict[str, Dict[str, str]]) -> Optional[str]:
-    if req in PKG_PREFERENCES:
-        return f"{PKG_SET}.{PKG_PREFERENCES[req]}"
+    # Extract the base name, removing any extras (e.g., '[flask]')
+    base_req_name = req.split('[')[0]
+    logging.debug(f"Searching for base_req_name: {base_req_name}")
+    if base_req_name in PKG_PREFERENCES:
+        return f"{PKG_SET}.{PKG_PREFERENCES[base_req_name]}"
     attr_paths = []
-    names = [req]
+    names = [base_req_name]
     # E.g. python-mpd2 is actually called python3.6-mpd2
     # instead of python-3.6-python-mpd2 inside Nixpkgs
-    if req.startswith("python-") or req.startswith("python_"):
-        names.append(req[len("python-") :])
+    if base_req_name.startswith("python-") or base_req_name.startswith("python_"):
+        names.append(base_req_name[len("python-") :])
     for name in names:
         # treat "-" and "_" equally
         name = re.sub("[-_]", "[-_]", name)
@@ -151,9 +162,9 @@ def parse_pyproject_toml(version: str, provider_name: str) -> Dict:
     try:
         content = get_file_from_github(version, path)
         data = tomli.loads(content.decode('utf-8'))
-        
+
         dependencies = data.get('project', {}).get('dependencies', [])
-        
+
         # Extract optional dependencies
         optional_dependencies = data.get('project', {}).get('optional-dependencies', {})
         for opt_deps_list in optional_dependencies.values():
@@ -284,7 +295,7 @@ def get_all_providers_from_github(version: str) -> List[str]:
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     version = get_version()
     packages = dump_packages()
     logging.info("Generating providers.nix for version %s", version)
@@ -294,7 +305,7 @@ def main() -> None:
 
     provider_reqs = get_provider_reqs(version, packages, provider_names)
     provider_imports = get_provider_imports(version, provider_names)
-    with open("providers.nix", "w") as fh:
+    with open(os.path.join(os.path.dirname(sys.argv[0]), "providers.nix"), "w") as fh:
         to_nix_expr(provider_reqs, provider_imports, fh)
 
 
