@@ -4,7 +4,6 @@
   python,
   buildPythonPackage,
   fetchFromGitHub,
-  fetchpatch,
   hatchling,
   gitpython,
   gitdb,
@@ -102,12 +101,29 @@
 let
   version = "3.0.3";
 
-  airflow-src = fetchFromGitHub {
+  airflow-unpatched-src = fetchFromGitHub {
     owner = "apache";
     repo = "airflow";
     tag = "${version}";
     forceFetchGit = true;
     hash = "sha256-G+lEFHm3qZR7BID8p4S42JC65yt3myWUHQkNy+OmKf8=";
+  };
+
+  airflow-src = stdenv.mkDerivation {
+    pname = "apache-airflow-source";
+    inherit version;
+    src = airflow-unpatched-src;
+    postpatch = ''
+      rm -rf src/task-sdk/src/airflow/sdk/_shared/timezones
+      #mkdir -p src/airflow/sdk/_shared
+      ln -s src/shared/timezones/src/airflow_shared/timezones src/task-sdk/src/airflow/sdk/_shared/timezones
+      rm -rf src/src/airflow/_shared/timezones
+      #mkdir -p src/airflow/sdk/_shared
+      ln -s src/shared/timezones/src/airflow_shared/timezones src/src/airflow/_shared/timezones
+    '';
+    installPhase = ''
+      cp -r . $out
+    '';
   };
 
   providers = import ./providers.nix;
@@ -146,15 +162,12 @@ let
     pname = "apache-airflow-core";
     inherit version;
     src = "${airflow-src}/airflow-core";
-    build-system = [ hatchling ];
+    build-system = [ hatchling gitpython pluggy ];
     pyproject = true;
-    postPatch = ''
-      substituteInPlace airflow-core/pyproject.toml \
-      --replace-fail "trove-classifiers==2025.4.11.15" "trove-classifiers==2025.5.9.12"
-    '';
+
+    buildInputs = [ gitpython pluggy ];
     dependencies = [
       gitdb
-      gitpython
       smmap
       marshmallow-oneofschema
       methodtools
@@ -252,6 +265,7 @@ let
       python-dateutil
       retryhttp
       structlog
+      airflowCore
     ];
     pyproject = true;
   };
@@ -264,14 +278,7 @@ buildPythonPackage {
   pyproject = true;
   build-system = [ hatchling ];
 
-  patches = [
-    # fixes issue with Airflow 3.0.3, this commit is already in main but not in 3.0.3
-    (fetchpatch {
-      url = "https://github.com/apache/airflow/commit/5f07ae13260068f48f4b3e35502755b593e82b4c.patch";
-      hash = "";
-      }
-    )
-  ];
+
 
   dependencies = [
     cadwyn

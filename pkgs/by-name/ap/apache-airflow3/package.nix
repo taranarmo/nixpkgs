@@ -135,17 +135,7 @@ let
         format = "setuptools";
         doCheck = false;
       });
-      #flask-sqlalchemy = pySuper.flask-sqlalchemy.overridePythonAttrs (o: {
-      #  src = fetchPypi {
-      #    pname = "Flask-SQLAlchemy";
-      #    version = "3.0.1";
-      #    hash = "sha256-Cl1YZ3SUmFbk8f6L46ZMWUYVlZ454rBB6Ie6xcdWvEI=";
-      #  };
-      #  nativeBuildInputs = with pySelf; [ pdm-pep517 ];
-      #  format = "pyproject";
-      #  #format = "setuptools";
-      #});
-      httpcore = pySuper.httpcore.overridePythonAttrs (o: rec {
+      httpcore = pySuper.httpcore.overridePythonAttrs (o: {
         # nullify upstream's pytest flags which cause
         # "TLS/SSL connection has been closed (EOF)"
         # with pytest-httpbin 1.x
@@ -170,12 +160,12 @@ let
       sqlalchemy = pySuper.sqlalchemy_1_4;
 
       gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
-        version = "3.1.44";
+        version = "3.1.45";
         src = fetchFromGitHub {
           owner = "gitpython-developers";
           repo = "GitPython";
           rev = "refs/tags/${version}";
-          hash = "sha256-KnKaBv/tKk4wiGWUWCEgd1vgrTouwUhqxJ1/nMjRaWk=";
+          hash = "sha256-VHnuHliZEc/jiSo/Zi9J/ipAykj7D6NttuzPZiE8svM=";
         };
       });
       gitdb = pySuper.gitdb.overridePythonAttrs (o: rec {
@@ -195,15 +185,6 @@ let
           hash = "sha256-lxwpbZgZq7OBERL8UsepdRyNOBiY82Uzuxb5eR6UH9Y=";
         };
       });
-      packaging = pySuper.packaging.overridePythonAttrs (o: rec {
-        version = "25.0";
-        src = fetchFromGitHub {
-          owner = "pypa";
-          repo = "packaging";
-          rev = "refs/tags/${version}";
-          hash = "sha256-7B/d9AG6D8CULM+Ut7g5MogEiXtvVgGvsu3comHHoos=";
-        };
-      });
       pathspec = pySuper.pathspec.overridePythonAttrs (o: rec {
         version = "0.12.1";
         src = fetchFromGitHub {
@@ -214,12 +195,12 @@ let
         };
       });
       pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
-        version = "1.5.0";
+        version = "1.6.0";
         src = fetchFromGitHub {
           owner = "pytest-dev";
           repo = "pluggy";
           rev = "refs/tags/${version}";
-          hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
+          hash = "sha256-pkQjPJuSASWmzwzp9H/UTJBQDr2r2RiofxpF135lAgc=";
         };
       });
       smmap = pySuper.smmap.overridePythonAttrs (o: rec {
@@ -231,15 +212,6 @@ let
           hash = "sha256-0Y175kjv/8UJpSxtLpWH4/VT7JrcVPAq79Nf3rtHZZM=";
         };
       });
-      # tomli = pySuper.tomli.overridePythonAttrs (o: rec {
-      #   version = "2.2.1";
-      #   src = fetchFromGitHub {
-      #     owner = "hukkin";
-      #     repo = "tomli";
-      #     rev = "refs/tags/${version}";
-      #     hash = "sha256-4MWp9pPiUZZkjvGXzw8/gDele743NBj8uG4jvK2ohUM=";
-      #   };
-      # });
       trove-classifiers = pySuper.trove-classifiers.overridePythonAttrs (o: rec {
         version = "2025.5.9.12";
         src = fetchPypi {
