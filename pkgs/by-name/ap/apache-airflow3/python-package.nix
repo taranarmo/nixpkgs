@@ -114,12 +114,8 @@ let
     inherit version;
     src = airflow-unpatched-src;
     postpatch = ''
-      rm -rf src/task-sdk/src/airflow/sdk/_shared/timezones
-      #mkdir -p src/airflow/sdk/_shared
-      ln -s src/shared/timezones/src/airflow_shared/timezones src/task-sdk/src/airflow/sdk/_shared/timezones
-      rm -rf src/src/airflow/_shared/timezones
-      #mkdir -p src/airflow/sdk/_shared
-      ln -s src/shared/timezones/src/airflow_shared/timezones src/src/airflow/_shared/timezones
+      substituteInPlace airflow-core/pyproject.toml \
+        --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12'
     '';
     installPhase = ''
       cp -r . $out
