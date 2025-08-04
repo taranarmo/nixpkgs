@@ -2,382 +2,382 @@
 {
   airbyte = {
     deps = [  ];
-    imports = [ "airflow.providers.airbyte.get_provider_info" "airflow.providers.airbyte.hooks.airbyte" "airflow.providers.airbyte.operators.airbyte" ];
+    imports = [ "airflow.providers.airbyte.get_provider_info" ];
   };
   alibaba = {
     deps = [ "alibabacloud-adb20211201" "alibabacloud-tea-openapi" "oss2" ];
-    imports = [ "airflow.providers.alibaba.get_provider_info" "airflow.providers.alibaba.hooks.alibaba" "airflow.providers.alibaba.operators.alibaba" ];
+    imports = [ "airflow.providers.alibaba.get_provider_info" ];
   };
   amazon = {
     deps = [ "aiobotocore" "asgiref" "boto3" "botocore" "inflection" "jmespath" "jsonpath-ng" "lxml" "pandas" "pyathena" "python3-saml" "redshift-connector" "s3fs" "xmlsec" ];
-    imports = [ "airflow.providers.amazon.get_provider_info" "airflow.providers.amazon.hooks.amazon" "airflow.providers.amazon.operators.amazon" ];
+    imports = [ "airflow.providers.amazon.get_provider_info" ];
   };
   apache_beam = {
     deps = [ "apache-beam" "numpy" "pyarrow" ];
-    imports = [ "airflow.providers.apache.beam.get_provider_info" "airflow.providers.apache.beam.hooks.apache.beam" "airflow.providers.apache.beam.operators.apache.beam" ];
+    imports = [ "airflow.providers.apache.beam.get_provider_info" ];
   };
   apache_cassandra = {
     deps = [ "cassandra-driver" ];
-    imports = [ "airflow.providers.apache.cassandra.get_provider_info" "airflow.providers.apache.cassandra.hooks.apache.cassandra" "airflow.providers.apache.cassandra.operators.apache.cassandra" ];
+    imports = [ "airflow.providers.apache.cassandra.get_provider_info" ];
   };
   apache_drill = {
     deps = [  ];
-    imports = [ "airflow.providers.apache.drill.get_provider_info" "airflow.providers.apache.drill.hooks.apache.drill" "airflow.providers.apache.drill.operators.apache.drill" ];
+    imports = [ "airflow.providers.apache.drill.get_provider_info" ];
   };
   apache_druid = {
     deps = [ "pydruid" ];
-    imports = [ "airflow.providers.apache.druid.get_provider_info" "airflow.providers.apache.druid.hooks.apache.druid" "airflow.providers.apache.druid.operators.apache.druid" ];
+    imports = [ "airflow.providers.apache.druid.get_provider_info" ];
   };
   apache_flink = {
     deps = [ "cryptography" ];
-    imports = [ "airflow.providers.apache.flink.get_provider_info" "airflow.providers.apache.flink.hooks.apache.flink" "airflow.providers.apache.flink.operators.apache.flink" ];
+    imports = [ "airflow.providers.apache.flink.get_provider_info" ];
   };
   apache_hdfs = {
     deps = [ "hdfs" "pandas" ];
-    imports = [ "airflow.providers.apache.hdfs.get_provider_info" "airflow.providers.apache.hdfs.hooks.apache.hdfs" "airflow.providers.apache.hdfs.operators.apache.hdfs" ];
+    imports = [ "airflow.providers.apache.hdfs.get_provider_info" ];
   };
   apache_hive = {
     deps = [ "jmespath" "pandas" "thrift" ];
-    imports = [ "airflow.providers.apache.hive.get_provider_info" "airflow.providers.apache.hive.hooks.apache.hive" "airflow.providers.apache.hive.operators.apache.hive" ];
+    imports = [ "airflow.providers.apache.hive.get_provider_info" ];
   };
   apache_iceberg = {
     deps = [  ];
-    imports = [ "airflow.providers.apache.iceberg.get_provider_info" "airflow.providers.apache.iceberg.hooks.apache.iceberg" "airflow.providers.apache.iceberg.operators.apache.iceberg" ];
+    imports = [ "airflow.providers.apache.iceberg.get_provider_info" ];
   };
   apache_impala = {
     deps = [ "kerberos" ];
-    imports = [ "airflow.providers.apache.impala.get_provider_info" "airflow.providers.apache.impala.hooks.apache.impala" "airflow.providers.apache.impala.operators.apache.impala" ];
+    imports = [ "airflow.providers.apache.impala.get_provider_info" ];
   };
   apache_kafka = {
     deps = [ "asgiref" "confluent-kafka" ];
-    imports = [ "airflow.providers.apache.kafka.get_provider_info" "airflow.providers.apache.kafka.hooks.apache.kafka" "airflow.providers.apache.kafka.operators.apache.kafka" ];
+    imports = [ "airflow.providers.apache.kafka.get_provider_info" ];
   };
   apache_kylin = {
     deps = [  ];
-    imports = [ "airflow.providers.apache.kylin.get_provider_info" "airflow.providers.apache.kylin.hooks.apache.kylin" "airflow.providers.apache.kylin.operators.apache.kylin" ];
+    imports = [ "airflow.providers.apache.kylin.get_provider_info" ];
   };
   apache_livy = {
     deps = [ "aiohttp" "asgiref" ];
-    imports = [ "airflow.providers.apache.livy.get_provider_info" "airflow.providers.apache.livy.hooks.apache.livy" "airflow.providers.apache.livy.operators.apache.livy" ];
+    imports = [ "airflow.providers.apache.livy.get_provider_info" ];
   };
   apache_pig = {
     deps = [  ];
-    imports = [ "airflow.providers.apache.pig.get_provider_info" "airflow.providers.apache.pig.hooks.apache.pig" "airflow.providers.apache.pig.operators.apache.pig" ];
+    imports = [ "airflow.providers.apache.pig.get_provider_info" ];
   };
   apache_pinot = {
     deps = [  ];
-    imports = [ "airflow.providers.apache.pinot.get_provider_info" "airflow.providers.apache.pinot.hooks.apache.pinot" "airflow.providers.apache.pinot.operators.apache.pinot" ];
+    imports = [ "airflow.providers.apache.pinot.get_provider_info" ];
   };
   apache_spark = {
     deps = [ "grpcio-status" "pyspark" ];
-    imports = [ "airflow.providers.apache.spark.get_provider_info" "airflow.providers.apache.spark.hooks.apache.spark" "airflow.providers.apache.spark.operators.apache.spark" ];
+    imports = [ "airflow.providers.apache.spark.get_provider_info" ];
   };
   apprise = {
     deps = [ "apprise" ];
-    imports = [ "airflow.providers.apprise.get_provider_info" "airflow.providers.apprise.hooks.apprise" "airflow.providers.apprise.operators.apprise" ];
+    imports = [ "airflow.providers.apprise.get_provider_info" ];
   };
   arangodb = {
     deps = [ "python-arango" ];
-    imports = [ "airflow.providers.arangodb.get_provider_info" "airflow.providers.arangodb.hooks.arangodb" "airflow.providers.arangodb.operators.arangodb" ];
+    imports = [ "airflow.providers.arangodb.get_provider_info" ];
   };
   asana = {
     deps = [ "asana" ];
-    imports = [ "airflow.providers.asana.get_provider_info" "airflow.providers.asana.hooks.asana" "airflow.providers.asana.operators.asana" ];
+    imports = [ "airflow.providers.asana.get_provider_info" ];
   };
   atlassian_jira = {
     deps = [ "atlassian-python-api" ];
-    imports = [ "airflow.providers.atlassian.jira.get_provider_info" "airflow.providers.atlassian.jira.hooks.atlassian.jira" "airflow.providers.atlassian.jira.operators.atlassian.jira" ];
+    imports = [ "airflow.providers.atlassian.jira.get_provider_info" ];
   };
   celery = {
     deps = [ "celery" "flower" ];
-    imports = [ "airflow.providers.celery.get_provider_info" "airflow.providers.celery.hooks.celery" "airflow.providers.celery.operators.celery" ];
+    imports = [ "airflow.providers.celery.get_provider_info" ];
   };
   cloudant = {
     deps = [  ];
-    imports = [ "airflow.providers.cloudant.get_provider_info" "airflow.providers.cloudant.hooks.cloudant" "airflow.providers.cloudant.operators.cloudant" ];
+    imports = [ "airflow.providers.cloudant.get_provider_info" ];
   };
   cncf_kubernetes = {
     deps = [ "aiofiles" "asgiref" "cryptography" "kubernetes" "kubernetes-asyncio" ];
-    imports = [ "airflow.providers.cncf.kubernetes.get_provider_info" "airflow.providers.cncf.kubernetes.hooks.cncf.kubernetes" "airflow.providers.cncf.kubernetes.operators.cncf.kubernetes" ];
+    imports = [ "airflow.providers.cncf.kubernetes.get_provider_info" ];
   };
   cohere = {
     deps = [ "cohere" ];
-    imports = [ "airflow.providers.cohere.get_provider_info" "airflow.providers.cohere.hooks.cohere" "airflow.providers.cohere.operators.cohere" ];
+    imports = [ "airflow.providers.cohere.get_provider_info" ];
   };
   common_compat = {
     deps = [  ];
-    imports = [ "airflow.providers.common.compat.get_provider_info" "airflow.providers.common.compat.hooks.common.compat" "airflow.providers.common.compat.operators.common.compat" ];
+    imports = [ "airflow.providers.common.compat.get_provider_info" ];
   };
   common_io = {
     deps = [  ];
-    imports = [ "airflow.providers.common.io.get_provider_info" "airflow.providers.common.io.hooks.common.io" "airflow.providers.common.io.operators.common.io" ];
+    imports = [ "airflow.providers.common.io.get_provider_info" ];
   };
   common_messaging = {
     deps = [  ];
-    imports = [ "airflow.providers.common.messaging.get_provider_info" "airflow.providers.common.messaging.hooks.common.messaging" "airflow.providers.common.messaging.operators.common.messaging" ];
+    imports = [ "airflow.providers.common.messaging.get_provider_info" ];
   };
   common_sql = {
     deps = [ "methodtools" "more-itertools" "pandas" "polars" "sqlparse" ];
-    imports = [ "airflow.providers.common.sql.get_provider_info" "airflow.providers.common.sql.hooks.common.sql" "airflow.providers.common.sql.operators.common.sql" ];
+    imports = [ "airflow.providers.common.sql.get_provider_info" ];
   };
   databricks = {
     deps = [ "aiohttp" "azure-identity" "databricks-sdk" "databricks-sql-connector" "mergedeep" "pandas" "pyarrow" "requests" ];
-    imports = [ "airflow.providers.databricks.get_provider_info" "airflow.providers.databricks.hooks.databricks" "airflow.providers.databricks.operators.databricks" ];
+    imports = [ "airflow.providers.databricks.get_provider_info" ];
   };
   datadog = {
     deps = [ "datadog" ];
-    imports = [ "airflow.providers.datadog.get_provider_info" "airflow.providers.datadog.hooks.datadog" "airflow.providers.datadog.operators.datadog" ];
+    imports = [ "airflow.providers.datadog.get_provider_info" ];
   };
   dbt_cloud = {
     deps = [ "aiohttp" "asgiref" ];
-    imports = [ "airflow.providers.dbt.cloud.get_provider_info" "airflow.providers.dbt.cloud.hooks.dbt.cloud" "airflow.providers.dbt.cloud.operators.dbt.cloud" ];
+    imports = [ "airflow.providers.dbt.cloud.get_provider_info" ];
   };
   dingding = {
     deps = [  ];
-    imports = [ "airflow.providers.dingding.get_provider_info" "airflow.providers.dingding.hooks.dingding" "airflow.providers.dingding.operators.dingding" ];
+    imports = [ "airflow.providers.dingding.get_provider_info" ];
   };
   discord = {
     deps = [  ];
-    imports = [ "airflow.providers.discord.get_provider_info" "airflow.providers.discord.hooks.discord" "airflow.providers.discord.operators.discord" ];
+    imports = [ "airflow.providers.discord.get_provider_info" ];
   };
   docker = {
     deps = [ "docker" "python-dotenv" ];
-    imports = [ "airflow.providers.docker.get_provider_info" "airflow.providers.docker.hooks.docker" "airflow.providers.docker.operators.docker" ];
+    imports = [ "airflow.providers.docker.get_provider_info" ];
   };
   edge3 = {
     deps = [ "pydantic" "retryhttp" ];
-    imports = [ "airflow.providers.edge3.get_provider_info" "airflow.providers.edge3.hooks.edge3" "airflow.providers.edge3.operators.edge3" ];
+    imports = [ "airflow.providers.edge3.get_provider_info" ];
   };
   elasticsearch = {
     deps = [ "elasticsearch" ];
-    imports = [ "airflow.providers.elasticsearch.get_provider_info" "airflow.providers.elasticsearch.hooks.elasticsearch" "airflow.providers.elasticsearch.operators.elasticsearch" ];
+    imports = [ "airflow.providers.elasticsearch.get_provider_info" ];
   };
   exasol = {
     deps = [ "pandas" ];
-    imports = [ "airflow.providers.exasol.get_provider_info" "airflow.providers.exasol.hooks.exasol" "airflow.providers.exasol.operators.exasol" ];
+    imports = [ "airflow.providers.exasol.get_provider_info" ];
   };
   fab = {
     deps = [ "blinker" "connexion" "flask" "flask-appbuilder" "flask-login" "flask-session" "flask-wtf" "jmespath" "kerberos" "werkzeug" "wtforms" ];
-    imports = [ "airflow.providers.fab.get_provider_info" "airflow.providers.fab.hooks.fab" "airflow.providers.fab.operators.fab" ];
+    imports = [ "airflow.providers.fab.get_provider_info" ];
   };
   facebook = {
     deps = [  ];
-    imports = [ "airflow.providers.facebook.get_provider_info" "airflow.providers.facebook.hooks.facebook" "airflow.providers.facebook.operators.facebook" ];
+    imports = [ "airflow.providers.facebook.get_provider_info" ];
   };
   ftp = {
     deps = [  ];
-    imports = [ "airflow.providers.ftp.get_provider_info" "airflow.providers.ftp.hooks.ftp" "airflow.providers.ftp.operators.ftp" ];
+    imports = [ "airflow.providers.ftp.get_provider_info" ];
   };
   git = {
     deps = [ "gitpython" ];
-    imports = [ "airflow.providers.git.get_provider_info" "airflow.providers.git.hooks.git" "airflow.providers.git.operators.git" ];
+    imports = [ "airflow.providers.git.get_provider_info" ];
   };
   github = {
     deps = [ "pygithub" ];
-    imports = [ "airflow.providers.github.get_provider_info" "airflow.providers.github.hooks.github" "airflow.providers.github.operators.github" ];
+    imports = [ "airflow.providers.github.get_provider_info" ];
   };
   google = {
     deps = [ "apache-beam" "asgiref" "dill" "gcsfs" "google-api-core" "google-api-python-client" "google-auth" "google-auth-httplib2" "google-cloud-automl" "google-cloud-bigquery" "google-cloud-bigquery-datatransfer" "google-cloud-bigquery-storage" "google-cloud-bigtable" "google-cloud-compute" "google-cloud-container" "google-cloud-datacatalog" "google-cloud-dataproc" "google-cloud-dlp" "google-cloud-kms" "google-cloud-language" "google-cloud-logging" "google-cloud-monitoring" "google-cloud-pubsub" "google-cloud-redis" "google-cloud-secret-manager" "google-cloud-spanner" "google-cloud-speech" "google-cloud-storage" "google-cloud-tasks" "google-cloud-texttospeech" "google-cloud-translate" "google-cloud-videointelligence" "google-cloud-vision" "google-cloud-workflows" "grpcio-gcp" "httpx" "immutabledict" "pandas" "plyvel" "proto-plus" "pyarrow" "pyopenssl" "python-slugify" "ray" "tenacity" "types-protobuf" ];
-    imports = [ "airflow.providers.google.get_provider_info" "airflow.providers.google.hooks.google" "airflow.providers.google.operators.google" ];
+    imports = [ "airflow.providers.google.get_provider_info" ];
   };
   grpc = {
     deps = [ "google-auth" "google-auth-httplib2" "grpcio" ];
-    imports = [ "airflow.providers.grpc.get_provider_info" "airflow.providers.grpc.hooks.grpc" "airflow.providers.grpc.operators.grpc" ];
+    imports = [ "airflow.providers.grpc.get_provider_info" ];
   };
   hashicorp = {
     deps = [ "boto3" "hvac" ];
-    imports = [ "airflow.providers.hashicorp.get_provider_info" "airflow.providers.hashicorp.hooks.hashicorp" "airflow.providers.hashicorp.operators.hashicorp" ];
+    imports = [ "airflow.providers.hashicorp.get_provider_info" ];
   };
   http = {
     deps = [ "aiohttp" "asgiref" "requests" "requests-toolbelt" ];
-    imports = [ "airflow.providers.http.get_provider_info" "airflow.providers.http.hooks.http" "airflow.providers.http.operators.http" ];
+    imports = [ "airflow.providers.http.get_provider_info" ];
   };
   imap = {
     deps = [  ];
-    imports = [ "airflow.providers.imap.get_provider_info" "airflow.providers.imap.hooks.imap" "airflow.providers.imap.operators.imap" ];
+    imports = [ "airflow.providers.imap.get_provider_info" ];
   };
   influxdb = {
     deps = [ "influxdb-client" "requests" ];
-    imports = [ "airflow.providers.influxdb.get_provider_info" "airflow.providers.influxdb.hooks.influxdb" "airflow.providers.influxdb.operators.influxdb" ];
+    imports = [ "airflow.providers.influxdb.get_provider_info" ];
   };
   jdbc = {
     deps = [ "jaydebeapi" ];
-    imports = [ "airflow.providers.jdbc.get_provider_info" "airflow.providers.jdbc.hooks.jdbc" "airflow.providers.jdbc.operators.jdbc" ];
+    imports = [ "airflow.providers.jdbc.get_provider_info" ];
   };
   jenkins = {
     deps = [ "python-jenkins" ];
-    imports = [ "airflow.providers.jenkins.get_provider_info" "airflow.providers.jenkins.hooks.jenkins" "airflow.providers.jenkins.operators.jenkins" ];
+    imports = [ "airflow.providers.jenkins.get_provider_info" ];
   };
   microsoft_azure = {
     deps = [ "adal" "adlfs" "azure-batch" "azure-cosmos" "azure-datalake-store" "azure-identity" "azure-keyvault-secrets" "azure-kusto-data" "azure-mgmt-containerinstance" "azure-mgmt-containerregistry" "azure-mgmt-cosmosdb" "azure-mgmt-datafactory" "azure-mgmt-datalake-store" "azure-mgmt-resource" "azure-mgmt-storage" "azure-servicebus" "azure-storage-blob" "azure-storage-file-datalake" "azure-storage-file-share" "azure-synapse-artifacts" "azure-synapse-spark" "flask-appbuilder" "microsoft-kiota-abstractions" "microsoft-kiota-authentication-azure" "microsoft-kiota-http" "microsoft-kiota-serialization-json" "microsoft-kiota-serialization-text" "msal-extensions" "msgraph-core" ];
-    imports = [ "airflow.providers.microsoft.azure.get_provider_info" "airflow.providers.microsoft.azure.hooks.microsoft.azure" "airflow.providers.microsoft.azure.operators.microsoft.azure" ];
+    imports = [ "airflow.providers.microsoft.azure.get_provider_info" ];
   };
   microsoft_mssql = {
     deps = [ "methodtools" "pymssql" ];
-    imports = [ "airflow.providers.microsoft.mssql.get_provider_info" "airflow.providers.microsoft.mssql.hooks.microsoft.mssql" "airflow.providers.microsoft.mssql.operators.microsoft.mssql" ];
+    imports = [ "airflow.providers.microsoft.mssql.get_provider_info" ];
   };
   microsoft_psrp = {
     deps = [ "pypsrp" ];
-    imports = [ "airflow.providers.microsoft.psrp.get_provider_info" "airflow.providers.microsoft.psrp.hooks.microsoft.psrp" "airflow.providers.microsoft.psrp.operators.microsoft.psrp" ];
+    imports = [ "airflow.providers.microsoft.psrp.get_provider_info" ];
   };
   microsoft_winrm = {
     deps = [ "pywinrm" ];
-    imports = [ "airflow.providers.microsoft.winrm.get_provider_info" "airflow.providers.microsoft.winrm.hooks.microsoft.winrm" "airflow.providers.microsoft.winrm.operators.microsoft.winrm" ];
+    imports = [ "airflow.providers.microsoft.winrm.get_provider_info" ];
   };
   mongo = {
     deps = [ "dnspython" "pymongo" ];
-    imports = [ "airflow.providers.mongo.get_provider_info" "airflow.providers.mongo.hooks.mongo" "airflow.providers.mongo.operators.mongo" ];
+    imports = [ "airflow.providers.mongo.get_provider_info" ];
   };
   mysql = {
     deps = [ "aiomysql" "mysqlclient" ];
-    imports = [ "airflow.providers.mysql.get_provider_info" "airflow.providers.mysql.hooks.mysql" "airflow.providers.mysql.operators.mysql" ];
+    imports = [ "airflow.providers.mysql.get_provider_info" ];
   };
   neo4j = {
     deps = [ "neo4j" ];
-    imports = [ "airflow.providers.neo4j.get_provider_info" "airflow.providers.neo4j.hooks.neo4j" "airflow.providers.neo4j.operators.neo4j" ];
+    imports = [ "airflow.providers.neo4j.get_provider_info" ];
   };
   odbc = {
     deps = [ "pyodbc" ];
-    imports = [ "airflow.providers.odbc.get_provider_info" "airflow.providers.odbc.hooks.odbc" "airflow.providers.odbc.operators.odbc" ];
+    imports = [ "airflow.providers.odbc.get_provider_info" ];
   };
   openai = {
     deps = [ "openai" ];
-    imports = [ "airflow.providers.openai.get_provider_info" "airflow.providers.openai.hooks.openai" "airflow.providers.openai.operators.openai" ];
+    imports = [ "airflow.providers.openai.get_provider_info" ];
   };
   openfaas = {
     deps = [  ];
-    imports = [ "airflow.providers.openfaas.get_provider_info" "airflow.providers.openfaas.hooks.openfaas" "airflow.providers.openfaas.operators.openfaas" ];
+    imports = [ "airflow.providers.openfaas.get_provider_info" ];
   };
   openlineage = {
     deps = [ "attrs" ];
-    imports = [ "airflow.providers.openlineage.get_provider_info" "airflow.providers.openlineage.hooks.openlineage" "airflow.providers.openlineage.operators.openlineage" ];
+    imports = [ "airflow.providers.openlineage.get_provider_info" ];
   };
   opensearch = {
     deps = [ "opensearch-py" ];
-    imports = [ "airflow.providers.opensearch.get_provider_info" "airflow.providers.opensearch.hooks.opensearch" "airflow.providers.opensearch.operators.opensearch" ];
+    imports = [ "airflow.providers.opensearch.get_provider_info" ];
   };
   opsgenie = {
     deps = [  ];
-    imports = [ "airflow.providers.opsgenie.get_provider_info" "airflow.providers.opsgenie.hooks.opsgenie" "airflow.providers.opsgenie.operators.opsgenie" ];
+    imports = [ "airflow.providers.opsgenie.get_provider_info" ];
   };
   oracle = {
     deps = [ "numpy" "oracledb" ];
-    imports = [ "airflow.providers.oracle.get_provider_info" "airflow.providers.oracle.hooks.oracle" "airflow.providers.oracle.operators.oracle" ];
+    imports = [ "airflow.providers.oracle.get_provider_info" ];
   };
   pagerduty = {
     deps = [  ];
-    imports = [ "airflow.providers.pagerduty.get_provider_info" "airflow.providers.pagerduty.hooks.pagerduty" "airflow.providers.pagerduty.operators.pagerduty" ];
+    imports = [ "airflow.providers.pagerduty.get_provider_info" ];
   };
   papermill = {
     deps = [ "ipykernel" "nbconvert" "pandas" "papermill" ];
-    imports = [ "airflow.providers.papermill.get_provider_info" "airflow.providers.papermill.hooks.papermill" "airflow.providers.papermill.operators.papermill" ];
+    imports = [ "airflow.providers.papermill.get_provider_info" ];
   };
   pgvector = {
     deps = [ "pgvector" ];
-    imports = [ "airflow.providers.pgvector.get_provider_info" "airflow.providers.pgvector.hooks.pgvector" "airflow.providers.pgvector.operators.pgvector" ];
+    imports = [ "airflow.providers.pgvector.get_provider_info" ];
   };
   pinecone = {
     deps = [  ];
-    imports = [ "airflow.providers.pinecone.get_provider_info" "airflow.providers.pinecone.hooks.pinecone" "airflow.providers.pinecone.operators.pinecone" ];
+    imports = [ "airflow.providers.pinecone.get_provider_info" ];
   };
   postgres = {
     deps = [ "asyncpg" "psycopg2" ];
-    imports = [ "airflow.providers.postgres.get_provider_info" "airflow.providers.postgres.hooks.postgres" "airflow.providers.postgres.operators.postgres" ];
+    imports = [ "airflow.providers.postgres.get_provider_info" ];
   };
   presto = {
     deps = [ "pandas" "presto-python-client" ];
-    imports = [ "airflow.providers.presto.get_provider_info" "airflow.providers.presto.hooks.presto" "airflow.providers.presto.operators.presto" ];
+    imports = [ "airflow.providers.presto.get_provider_info" ];
   };
   qdrant = {
     deps = [ "qdrant-client" ];
-    imports = [ "airflow.providers.qdrant.get_provider_info" "airflow.providers.qdrant.hooks.qdrant" "airflow.providers.qdrant.operators.qdrant" ];
+    imports = [ "airflow.providers.qdrant.get_provider_info" ];
   };
   redis = {
     deps = [ "redis" ];
-    imports = [ "airflow.providers.redis.get_provider_info" "airflow.providers.redis.hooks.redis" "airflow.providers.redis.operators.redis" ];
+    imports = [ "airflow.providers.redis.get_provider_info" ];
   };
   salesforce = {
     deps = [ "pandas" "simple-salesforce" ];
-    imports = [ "airflow.providers.salesforce.get_provider_info" "airflow.providers.salesforce.hooks.salesforce" "airflow.providers.salesforce.operators.salesforce" ];
+    imports = [ "airflow.providers.salesforce.get_provider_info" ];
   };
   samba = {
     deps = [ "smbprotocol" ];
-    imports = [ "airflow.providers.samba.get_provider_info" "airflow.providers.samba.hooks.samba" "airflow.providers.samba.operators.samba" ];
+    imports = [ "airflow.providers.samba.get_provider_info" ];
   };
   segment = {
     deps = [  ];
-    imports = [ "airflow.providers.segment.get_provider_info" "airflow.providers.segment.hooks.segment" "airflow.providers.segment.operators.segment" ];
+    imports = [ "airflow.providers.segment.get_provider_info" ];
   };
   sendgrid = {
     deps = [ "sendgrid" "werkzeug" ];
-    imports = [ "airflow.providers.sendgrid.get_provider_info" "airflow.providers.sendgrid.hooks.sendgrid" "airflow.providers.sendgrid.operators.sendgrid" ];
+    imports = [ "airflow.providers.sendgrid.get_provider_info" ];
   };
   sftp = {
     deps = [ "asyncssh" "paramiko" "pysftp" ];
-    imports = [ "airflow.providers.sftp.get_provider_info" "airflow.providers.sftp.hooks.sftp" "airflow.providers.sftp.operators.sftp" ];
+    imports = [ "airflow.providers.sftp.get_provider_info" ];
   };
   singularity = {
     deps = [ "spython" ];
-    imports = [ "airflow.providers.singularity.get_provider_info" "airflow.providers.singularity.hooks.singularity" "airflow.providers.singularity.operators.singularity" ];
+    imports = [ "airflow.providers.singularity.get_provider_info" ];
   };
   slack = {
     deps = [ "slack-sdk" ];
-    imports = [ "airflow.providers.slack.get_provider_info" "airflow.providers.slack.hooks.slack" "airflow.providers.slack.operators.slack" ];
+    imports = [ "airflow.providers.slack.get_provider_info" ];
   };
   smtp = {
     deps = [  ];
-    imports = [ "airflow.providers.smtp.get_provider_info" "airflow.providers.smtp.hooks.smtp" "airflow.providers.smtp.operators.smtp" ];
+    imports = [ "airflow.providers.smtp.get_provider_info" ];
   };
   snowflake = {
     deps = [ "pandas" "pyarrow" "snowflake-connector-python" "snowflake-sqlalchemy" ];
-    imports = [ "airflow.providers.snowflake.get_provider_info" "airflow.providers.snowflake.hooks.snowflake" "airflow.providers.snowflake.operators.snowflake" ];
+    imports = [ "airflow.providers.snowflake.get_provider_info" ];
   };
   sqlite = {
     deps = [  ];
-    imports = [ "airflow.providers.sqlite.get_provider_info" "airflow.providers.sqlite.hooks.sqlite" "airflow.providers.sqlite.operators.sqlite" ];
+    imports = [ "airflow.providers.sqlite.get_provider_info" ];
   };
   ssh = {
     deps = [ "paramiko" "sshtunnel" ];
-    imports = [ "airflow.providers.ssh.get_provider_info" "airflow.providers.ssh.hooks.ssh" "airflow.providers.ssh.operators.ssh" ];
+    imports = [ "airflow.providers.ssh.get_provider_info" ];
   };
   standard = {
     deps = [  ];
-    imports = [ "airflow.providers.standard.get_provider_info" "airflow.providers.standard.hooks.standard" "airflow.providers.standard.operators.standard" ];
+    imports = [ "airflow.providers.standard.get_provider_info" ];
   };
   tableau = {
     deps = [ "tableauserverclient" ];
-    imports = [ "airflow.providers.tableau.get_provider_info" "airflow.providers.tableau.hooks.tableau" "airflow.providers.tableau.operators.tableau" ];
+    imports = [ "airflow.providers.tableau.get_provider_info" ];
   };
   telegram = {
     deps = [ "python-telegram-bot" ];
-    imports = [ "airflow.providers.telegram.get_provider_info" "airflow.providers.telegram.hooks.telegram" "airflow.providers.telegram.operators.telegram" ];
+    imports = [ "airflow.providers.telegram.get_provider_info" ];
   };
   teradata = {
     deps = [  ];
-    imports = [ "airflow.providers.teradata.get_provider_info" "airflow.providers.teradata.hooks.teradata" "airflow.providers.teradata.operators.teradata" ];
+    imports = [ "airflow.providers.teradata.get_provider_info" ];
   };
   trino = {
     deps = [ "pandas" ];
-    imports = [ "airflow.providers.trino.get_provider_info" "airflow.providers.trino.hooks.trino" "airflow.providers.trino.operators.trino" ];
+    imports = [ "airflow.providers.trino.get_provider_info" ];
   };
   vertica = {
     deps = [ "vertica-python" ];
-    imports = [ "airflow.providers.vertica.get_provider_info" "airflow.providers.vertica.hooks.vertica" "airflow.providers.vertica.operators.vertica" ];
+    imports = [ "airflow.providers.vertica.get_provider_info" ];
   };
   weaviate = {
     deps = [ "httpx" "pandas" "weaviate-client" ];
-    imports = [ "airflow.providers.weaviate.get_provider_info" "airflow.providers.weaviate.hooks.weaviate" "airflow.providers.weaviate.operators.weaviate" ];
+    imports = [ "airflow.providers.weaviate.get_provider_info" ];
   };
   yandex = {
     deps = [  ];
-    imports = [ "airflow.providers.yandex.get_provider_info" "airflow.providers.yandex.hooks.yandex" "airflow.providers.yandex.operators.yandex" ];
+    imports = [ "airflow.providers.yandex.get_provider_info" ];
   };
   ydb = {
     deps = [  ];
-    imports = [ "airflow.providers.ydb.get_provider_info" "airflow.providers.ydb.hooks.ydb" "airflow.providers.ydb.operators.ydb" ];
+    imports = [ "airflow.providers.ydb.get_provider_info" ];
   };
   zendesk = {
     deps = [  ];
-    imports = [ "airflow.providers.zendesk.get_provider_info" "airflow.providers.zendesk.hooks.zendesk" "airflow.providers.zendesk.operators.zendesk" ];
+    imports = [ "airflow.providers.zendesk.get_provider_info" ];
   };
 }
