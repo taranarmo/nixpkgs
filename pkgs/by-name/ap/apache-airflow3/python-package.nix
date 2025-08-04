@@ -106,7 +106,7 @@ let
     repo = "airflow";
     tag = "${version}";
     forceFetchGit = true;
-    hash = "sha256-G+lEFHm3qZR7BID8p4S42JC65yt3myWUHQkNy+OmKf8=";
+    hash = "sha256-/YZe9vKG3VJy2SzhSMl9SGspimcrmhT1yxAWMhvGYWg=";
   };
 
   airflow-src = stdenv.mkDerivation {
@@ -162,7 +162,7 @@ let
     pname = "apache-airflow-core";
     inherit version;
     src = "${airflow-src}/airflow-core";
-    build-system = [ hatchling gitpython pluggy ];
+    build-system = [ hatchling ];
     pyproject = true;
 
     buildInputs = [ gitpython pluggy ];

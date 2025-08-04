@@ -115,11 +115,11 @@ let
       ## flask-appbuilder doesn't work with sqlalchemy 2.x, flask-appbuilder 3.x
       ## https://github.com/dpgaspar/Flask-AppBuilder/issues/2038
       flask-appbuilder = pySuper.flask-appbuilder.overridePythonAttrs (o: rec {
-        version = "4.5.3";
+        version = "4.6.3";
         src = fetchPypi {
           pname = "Flask-AppBuilder";
           inherit version;
-          hash = "sha256-Lz+VO4E0vtAu0CNqt+hebDVLGzaABp12363AF+sFxWE=";
+          hash = "sha256-jA3kRiDeHdjCNIWPG2WGPtlzu2ZFehDJ2FVhbRpxLD4=";
         };
         meta.broken = false;
         pythonImportsCheck = [ ];
@@ -160,12 +160,12 @@ let
       sqlalchemy = pySuper.sqlalchemy_1_4;
 
       gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
-        version = "3.1.45";
+        version = "3.1.44";
         src = fetchFromGitHub {
           owner = "gitpython-developers";
           repo = "GitPython";
           rev = "refs/tags/${version}";
-          hash = "sha256-VHnuHliZEc/jiSo/Zi9J/ipAykj7D6NttuzPZiE8svM=";
+          hash = "sha256-KnKaBv/tKk4wiGWUWCEgd1vgrTouwUhqxJ1/nMjRaWk=";
         };
       });
       gitdb = pySuper.gitdb.overridePythonAttrs (o: rec {
@@ -195,12 +195,12 @@ let
         };
       });
       pluggy = pySuper.pluggy.overridePythonAttrs (o: rec {
-        version = "1.6.0";
+        version = "1.5.0";
         src = fetchFromGitHub {
           owner = "pytest-dev";
           repo = "pluggy";
           rev = "refs/tags/${version}";
-          hash = "sha256-pkQjPJuSASWmzwzp9H/UTJBQDr2r2RiofxpF135lAgc=";
+          hash = "sha256-f0DxyZZk6RoYtOEXLACcsOn2B+Hot4U4g5Ogr/hKmOE=";
         };
       });
       smmap = pySuper.smmap.overridePythonAttrs (o: rec {
