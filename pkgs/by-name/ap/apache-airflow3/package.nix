@@ -240,14 +240,14 @@ let
           hash = "sha256-d7gEny/rXTPu/MIbV/HieWNid6isita1hxA3skN3hJY=";
         };
       });
-      apache-airflow = pySelf.callPackage ./python-package.nix { };
+      apache-airflow3 = pySelf.callPackage ./python-package.nix { };
     };
   };
 in
 # See note in ./python-package.nix for
 # instructions on manually testing the web UI
 with python.pkgs;
-(toPythonApplication apache-airflow).overrideAttrs (previousAttrs: {
+(toPythonApplication apache-airflow3).overrideAttrs (previousAttrs: {
   # Provide access to airflow's modified python package set
   # for the cases where external scripts need to import
   # airflow modules, though *caveat emptor* because many of

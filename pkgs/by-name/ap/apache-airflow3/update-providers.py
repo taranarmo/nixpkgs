@@ -15,7 +15,7 @@ from urllib.error import HTTPError
 import tomli # Changed to tomli
 import yaml
 
-PKG_SET = "apache-airflow.pythonPackages"
+PKG_SET = "apache-airflow3.pythonPackages"
 
 # If some requirements are matched by multiple or no Python packages, the
 # following can be used to choose the correct one
