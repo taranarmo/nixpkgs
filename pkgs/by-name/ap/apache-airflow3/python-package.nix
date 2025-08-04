@@ -113,10 +113,6 @@ let
     pname = "apache-airflow-source";
     inherit version;
     src = airflow-unpatched-src;
-    postpatch = ''
-      substituteInPlace airflow-core/pyproject.toml \
-        --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12'
-    '';
     installPhase = ''
       cp -r . $out
     '';
@@ -157,9 +153,16 @@ let
   airflowCore = buildPythonPackage {
     pname = "apache-airflow-core";
     inherit version;
-    src = "${airflow-src}/airflow-core";
+    src = airflow-src;
+    preBuild = "cd airflow-core";
     build-system = [ hatchling ];
     pyproject = true;
+
+    postPatch = ''
+      substituteInPlace airflow-core/pyproject.toml \
+        --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12' \
+        --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' ' # remove dep on task sdk (cyclic dep)
+    '';
 
     buildInputs = [ gitpython pluggy ];
     dependencies = [
