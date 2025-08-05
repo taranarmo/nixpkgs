@@ -1043,6 +1043,8 @@ with pkgs;
 
   alice-tools-qt6 = qt6Packages.callPackage ../tools/games/alice-tools { };
 
+  airbyte-api = python3Packages.callPackage ../by-name/ai/airbyte-api { };
+
   auditwheel = with python3Packages; toPythonApplication auditwheel;
 
   davinci-resolve-studio = callPackage ../by-name/da/davinci-resolve/package.nix {
