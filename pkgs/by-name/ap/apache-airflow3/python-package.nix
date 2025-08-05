@@ -119,12 +119,7 @@ let
   };
 
   providers = import ./providers.nix;
-  providerMapping = {
-    common_compat = "common/compat";
-    common_io = "common/io";
-    common_sql = "common/sql";
-  };
-  getProviderPath = provider: if lib.hasAttr provider providerMapping then providerMapping.${provider} else provider;
+  getProviderPath = provider: lib.replaceStrings [ "_" ] [ "/" ] provider;
   getProviderDeps = provider: map (dep: python.pkgs.${dep}) providers.${provider}.deps;
   getProviderImports = provider: providers.${provider}.imports;
   providerImports = lib.concatMap getProviderImports enabledProviders;
