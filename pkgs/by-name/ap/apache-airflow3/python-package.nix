@@ -147,9 +147,12 @@ let
     pyproject = true;
 
     postPatch = ''
+      # airflow-core use different trove-classifiers version from other components
       substituteInPlace airflow-core/pyproject.toml \
-        --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12' \
-        --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' ' # remove dep on task sdk (cyclic dep)
+        --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12'
+      # remove dep on task sdk (cyclic dep)
+      substituteInPlace airflow-core/pyproject.toml \
+        --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' '
     '';
 
     buildInputs = [ gitpython pluggy ];
