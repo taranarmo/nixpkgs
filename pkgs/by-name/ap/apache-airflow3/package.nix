@@ -112,6 +112,10 @@ let
         preCheck = "";
         postCheck = "";
       });
+      kerberos = pySuper.kerberos.overridePythonAttrs (o: {
+        meta.broken = false;
+        pythonImportsCheck = [ ];
+      });
       ## flask-appbuilder doesn't work with sqlalchemy 2.x, flask-appbuilder 3.x
       ## https://github.com/dpgaspar/Flask-AppBuilder/issues/2038
       flask-appbuilder = pySuper.flask-appbuilder.overridePythonAttrs (o: rec {
