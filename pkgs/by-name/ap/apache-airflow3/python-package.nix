@@ -155,8 +155,9 @@ let
         --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' '
     '';
 
-    buildInputs = [ gitpython pluggy ];
     dependencies = [
+      gitpython
+      pluggy
       gitdb
       smmap
       marshmallow-oneofschema
