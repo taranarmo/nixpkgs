@@ -51,7 +51,7 @@ let
         ];
         postPatch = ''
           substituteInPlace connexion/__init__.py \
-            --replace "2020.0.dev1" "${version}"
+            --replace-fail "2020.0.dev1" "${version}"
         '';
       });
       werkzeug = pySuper.werkzeug.overridePythonAttrs (o: rec {
@@ -141,7 +141,7 @@ let
         # with pytest-httpbin 1.x
         preCheck = ''
           substituteInPlace pyproject.toml \
-            --replace '[tool.pytest.ini_options]' '[tool.notpytest.ini_options]'
+            --replace-fail '[tool.pytest.ini_options]' '[tool.notpytest.ini_options]'
         '';
         doCheck = false;
       });
