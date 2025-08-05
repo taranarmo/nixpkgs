@@ -25,7 +25,7 @@ PKG_PREFERENCES = {
     "google-api-python-client": "google-api-python-client",
     "numpy": "numpy",
     "protobuf": "protobuf",
-    "psycopg2-binary": "psycopg2",
+    
     "pydantic": "pydantic",
     "requests_toolbelt": "requests-toolbelt",
 }

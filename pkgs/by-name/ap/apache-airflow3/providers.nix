@@ -281,7 +281,7 @@
     imports = [ "airflow.providers.pinecone.get_provider_info" ];
   };
   postgres = {
-    deps = [ "asyncpg" "psycopg2" ];
+    deps = [ "asyncpg" "psycopg2-binary" ];
     imports = [ "airflow.providers.postgres.get_provider_info" ];
   };
   presto = {
