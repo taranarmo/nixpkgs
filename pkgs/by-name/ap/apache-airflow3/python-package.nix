@@ -101,21 +101,12 @@
 let
   version = "3.0.3";
 
-  airflow-unpatched-src = fetchFromGitHub {
+  airflow-src = fetchFromGitHub {
     owner = "apache";
     repo = "airflow";
     tag = "${version}";
     forceFetchGit = true;
     hash = "sha256-/YZe9vKG3VJy2SzhSMl9SGspimcrmhT1yxAWMhvGYWg=";
-  };
-
-  airflow-src = stdenv.mkDerivation {
-    pname = "apache-airflow-source";
-    inherit version;
-    src = airflow-unpatched-src;
-    installPhase = ''
-      cp -r . $out
-    '';
   };
 
   providers = import ./providers.nix;
