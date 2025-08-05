@@ -152,7 +152,7 @@ buildPythonPackage rec {
 
   disabled = pythonOlder "3.7";
 
-  propagatedBuildInputs = [
+  dependencies = [
     alembic
     argcomplete
     asgiref
