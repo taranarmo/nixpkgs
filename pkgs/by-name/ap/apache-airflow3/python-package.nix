@@ -88,15 +88,7 @@
   universal-pathlib,
   werkzeug,
 
-  enabledProviders ? [
-    "common_compat"
-    "common_io"
-    "common_sql"
-    "fab"
-    "smtp"
-    "sqlite"
-    "standard"
-  ],
+  enabledProviders ? [ ],
 }:
 let
   version = "3.0.3";
@@ -108,6 +100,16 @@ let
     forceFetchGit = true;
     hash = "sha256-/YZe9vKG3VJy2SzhSMl9SGspimcrmhT1yxAWMhvGYWg=";
   };
+
+  requiredProviders = [
+    "common_compat"
+    "common_io"
+    "common_sql"
+    "fab"
+    "smtp"
+    "sqlite"
+    "standard"
+  ];
 
   providers = import ./providers.nix;
   getProviderPath = provider: lib.replaceStrings [ "_" ] [ "/" ] provider;
@@ -134,7 +136,7 @@ let
     pyproject = true;
   };
 
-  providerPackages = map buildProvider enabledProviders;
+  providerPackages = map buildProvider ( enabledProviders ++ requiredProviders );
 
   airflowCore = buildPythonPackage {
     pname = "apache-airflow-core";
