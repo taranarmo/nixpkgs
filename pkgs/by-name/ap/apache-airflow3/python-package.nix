@@ -117,26 +117,33 @@ let
   getProviderImports = provider: providers.${provider}.imports;
   providerImports = lib.concatMap getProviderImports enabledProviders;
 
-  getProviderVersion = provider: let
-    pyproject = builtins.fromTOML (builtins.readFile "${airflow-src}/providers/${getProviderPath provider}/pyproject.toml");
-  in pyproject.project.version;
+  getProviderVersion =
+    provider:
+    let
+      pyproject = builtins.fromTOML (
+        builtins.readFile "${airflow-src}/providers/${getProviderPath provider}/pyproject.toml"
+      );
+    in
+    pyproject.project.version;
 
-  buildProvider = provider: buildPythonPackage {
-    pname = "apache-airflow-providers-${provider}";
-    version = getProviderVersion provider;
-    src = "${airflow-src}/providers/${getProviderPath provider}";
-    buildInputs = [ flit-core ];
-    dependencies = getProviderDeps provider;
-    pythonRemoveDeps = [
-      "apache-airflow"
-    ];
-    pythonRelaxDeps = [
-      "flit-core"
-    ];
-    pyproject = true;
-  };
+  buildProvider =
+    provider:
+    buildPythonPackage {
+      pname = "apache-airflow-providers-${provider}";
+      version = getProviderVersion provider;
+      src = "${airflow-src}/providers/${getProviderPath provider}";
+      buildInputs = [ flit-core ];
+      dependencies = getProviderDeps provider;
+      pythonRemoveDeps = [
+        "apache-airflow"
+      ];
+      pythonRelaxDeps = [
+        "flit-core"
+      ];
+      pyproject = true;
+    };
 
-  providerPackages = map buildProvider ( enabledProviders ++ requiredProviders );
+  providerPackages = map buildProvider (enabledProviders ++ requiredProviders);
 
   airflowCore = buildPythonPackage {
     pname = "apache-airflow-core";
@@ -235,14 +242,18 @@ let
       universal-pathlib
       uuid6
       werkzeug
-    ] ++ providerPackages;
+    ]
+    ++ providerPackages;
   };
 
   taskSdk = buildPythonPackage {
     pname = "task-sdk";
     version = "1.0.0"; # Replace with the actual version if needed
     src = "${airflow-src}/task-sdk";
-    build-system = [ hatchling attrs ];
+    build-system = [
+      hatchling
+      attrs
+    ];
 
     dependencies = [
       aiologic
@@ -269,88 +280,86 @@ buildPythonPackage {
   pyproject = true;
   build-system = [ hatchling ];
 
-
-
   dependencies = [
     cadwyn
     svcs
     taskSdk
     pandas
     uvicorn
-  ] ++ providerPackages;
+  ]
+  ++ providerPackages;
 
-  propagatedBuildInputs =
-    [
-      gitpython
-      gitdb
-      packaging
-      pathspec
-      pluggy
-      smmap
-      tomli
-      trove-classifiers
-      sqlalchemy-utils
-      fastapi
-      libcst
-      a2wsgi
-      uuid6
-      alembic
-      argcomplete
-      asgiref
-      attrs
-      blinker
-      colorlog
-      configupdater
-      connexion
-      cron-descriptor
-      croniter
-      cryptography
-      deprecated
-      dill
-      flask-caching
-      flask-session
-      flask-wtf
-      flask
-      fsspec
-      google-re2
-      gunicorn
-      httpx
-      itsdangerous
-      jinja2
-      jsonschema
-      lazy-object-proxy
-      linkify-it-py
-      lockfile
-      markdown-it-py
-      markupsafe
-      marshmallow-oneofschema
-      mdit-py-plugins
-      methodtools
-      opentelemetry-api
-      opentelemetry-exporter-otlp
-      pendulum
-      psutil
-      pygments
-      pyjwt
-      python-daemon
-      python-dateutil
-      python-nvd3
-      python-slugify
-      requests
-      requests-toolbelt
-      rfc3339-validator
-      rich-argparse
-      rich
-      setproctitle
-      sqlalchemy
-      sqlalchemy-jsonfield
-      tabulate
-      tenacity
-      termcolor
-      universal-pathlib
-      werkzeug
-      airflowCore
-    ];
+  propagatedBuildInputs = [
+    gitpython
+    gitdb
+    packaging
+    pathspec
+    pluggy
+    smmap
+    tomli
+    trove-classifiers
+    sqlalchemy-utils
+    fastapi
+    libcst
+    a2wsgi
+    uuid6
+    alembic
+    argcomplete
+    asgiref
+    attrs
+    blinker
+    colorlog
+    configupdater
+    connexion
+    cron-descriptor
+    croniter
+    cryptography
+    deprecated
+    dill
+    flask-caching
+    flask-session
+    flask-wtf
+    flask
+    fsspec
+    google-re2
+    gunicorn
+    httpx
+    itsdangerous
+    jinja2
+    jsonschema
+    lazy-object-proxy
+    linkify-it-py
+    lockfile
+    markdown-it-py
+    markupsafe
+    marshmallow-oneofschema
+    mdit-py-plugins
+    methodtools
+    opentelemetry-api
+    opentelemetry-exporter-otlp
+    pendulum
+    psutil
+    pygments
+    pyjwt
+    python-daemon
+    python-dateutil
+    python-nvd3
+    python-slugify
+    requests
+    requests-toolbelt
+    rfc3339-validator
+    rich-argparse
+    rich
+    setproctitle
+    sqlalchemy
+    sqlalchemy-jsonfield
+    tabulate
+    tenacity
+    termcolor
+    universal-pathlib
+    werkzeug
+    airflowCore
+  ];
 
   pythonRelaxDeps = [
     "colorlog"
@@ -365,7 +374,8 @@ buildPythonPackage {
 
   pythonImportsCheck = [
     "airflow"
-  ] ++ providerImports;
+  ]
+  ++ providerImports;
 
   preCheck = ''
     export AIRFLOW_HOME=$HOME
