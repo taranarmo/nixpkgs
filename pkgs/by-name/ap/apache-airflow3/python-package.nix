@@ -396,19 +396,7 @@ buildPythonPackage {
     "bash_operator_kill" # psutil.AccessDenied
   ];
 
-  passthru.updateScript = writeScript "update.sh" ''
-    #!/usr/bin/env nix-shell
-    #!nix-shell -i bash -p common-updater-scripts curl pcre "python3.withPackages (ps: with ps; [ pyyaml ])" yarn2nix
-
-    set -euo pipefail
-
-    # Get new version
-    new_version="$(curl -s https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html |
-      pcregrep -o1 'Airflow ([0-9.]+).' | head -1)"
-    update-source-version apache-airflow3 "$new_version"
-
-    ./update-providers.py ${airflow-src}
-  '';
+  passthru.updateScript = ./update.sh;
 
   meta = with lib; {
     description = "Programmatically author, schedule and monitor data pipelines";
