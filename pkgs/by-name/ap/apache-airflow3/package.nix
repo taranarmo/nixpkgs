@@ -251,7 +251,7 @@ in
 # See note in ./python-package.nix for
 # instructions on manually testing the web UI
 with python.pkgs;
-(toPythonApplication apache-airflow3).overrideAttrs (previousAttrs: {
+apache-airflow3.overrideAttrs (previousAttrs: {
   # Provide access to airflow's modified python package set
   # for the cases where external scripts need to import
   # airflow modules, though *caveat emptor* because many of
@@ -261,4 +261,8 @@ with python.pkgs;
   passthru = (previousAttrs.passthru or { }) // {
     pythonPackages = python.pkgs;
   };
+
+  shellHook = ''
+    export PATH="${apache-airflow3.core}/bin:$PATH"
+  '';
 })

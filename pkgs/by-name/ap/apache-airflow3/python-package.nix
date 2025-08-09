@@ -3,6 +3,7 @@
   stdenv,
   python,
   buildPythonPackage,
+  buildPythonApplication,
   fetchFromGitHub,
   hatchling,
   gitpython,
@@ -133,6 +134,7 @@ let
       version = getProviderVersion provider;
       src = "${airflow-src}/providers/${getProviderPath provider}";
       buildInputs = [ flit-core ];
+      pyproject = true;
       dependencies = getProviderDeps provider;
       pythonRemoveDeps = [
         "apache-airflow"
@@ -140,7 +142,6 @@ let
       pythonRelaxDeps = [
         "flit-core"
       ];
-      pyproject = true;
     };
 
   providerPackages = map buildProvider (enabledProviders ++ requiredProviders);
@@ -153,11 +154,13 @@ let
     build-system = [ hatchling ];
     pyproject = true;
 
+    doCheck = false;
+
     postPatch = ''
       # airflow-core use different trove-classifiers version from other components
       substituteInPlace airflow-core/pyproject.toml \
         --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12'
-      # remove dep on task sdk (cyclic dep)
+      # remove cyclic dep
       substituteInPlace airflow-core/pyproject.toml \
         --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' '
     '';
@@ -250,6 +253,7 @@ let
     pname = "task-sdk";
     version = "1.0.0"; # Replace with the actual version if needed
     src = "${airflow-src}/task-sdk";
+    pyproject = true;
     build-system = [
       hatchling
       attrs
@@ -269,11 +273,10 @@ let
       structlog
       airflowCore
     ];
-    pyproject = true;
   };
 
 in
-buildPythonPackage {
+buildPythonApplication {
   pname = "apache-airflow";
   inherit version;
   src = airflow-src;
@@ -377,7 +380,7 @@ buildPythonPackage {
   ]
   ++ providerImports;
 
-  preCheck = ''
+  installCheckPhase = ''
     export AIRFLOW_HOME=$HOME
     export AIRFLOW__CORE__UNIT_TEST_MODE=True
     export AIRFLOW_DB="$HOME/airflow.db"
@@ -396,7 +399,10 @@ buildPythonPackage {
     "bash_operator_kill" # psutil.AccessDenied
   ];
 
-  passthru.updateScript = ./update.sh;
+  passthru = {
+    updateScript = ./update.sh;
+    core = airflowCore;
+  };
 
   meta = with lib; {
     description = "Programmatically author, schedule and monitor data pipelines";
