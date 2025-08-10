@@ -164,12 +164,12 @@ let
       sqlalchemy = pySuper.sqlalchemy_1_4;
 
       gitpython = pySuper.gitpython.overridePythonAttrs (o: rec {
-        version = "3.1.44";
+        version = "3.1.45";
         src = fetchFromGitHub {
           owner = "gitpython-developers";
           repo = "GitPython";
           rev = "refs/tags/${version}";
-          hash = "sha256-KnKaBv/tKk4wiGWUWCEgd1vgrTouwUhqxJ1/nMjRaWk=";
+          hash = "sha256-VHnuHliZEc/jiSo/Zi9J/ipAykj7D6NttuzPZiE8svM=";
         };
       });
       gitdb = pySuper.gitdb.overridePythonAttrs (o: rec {

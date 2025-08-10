@@ -92,14 +92,14 @@
   enabledProviders ? [ ],
 }:
 let
-  version = "3.0.3";
+  version = "3.0.4";
 
   airflow-src = fetchFromGitHub {
     owner = "apache";
     repo = "airflow";
     tag = "${version}";
     forceFetchGit = true;
-    hash = "sha256-/YZe9vKG3VJy2SzhSMl9SGspimcrmhT1yxAWMhvGYWg=";
+    hash = "sha256-3yo+lW7iXld90QKkimVbVQ4klNHv65Nu+p0aWuj7KlQ=";
   };
 
   requiredProviders = [
@@ -156,9 +156,6 @@ let
     doCheck = false;
 
     postPatch = ''
-      # airflow-core use different trove-classifiers version from other components
-      substituteInPlace airflow-core/pyproject.toml \
-        --replace-fail 'trove-classifiers==2025.4.11.15' 'trove-classifiers==2025.5.9.12'
       # remove cyclic dep
       substituteInPlace airflow-core/pyproject.toml \
         --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' '
