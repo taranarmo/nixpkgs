@@ -18047,6 +18047,8 @@ self: super: with self; {
 
   thespian = callPackage ../development/python-modules/thespian { };
 
+  thrift-sasl = callPackage ../development/python-modules/thrift-sasl { };
+
   thinc = callPackage ../development/python-modules/thinc { };
 
   thingspeak = callPackage ../development/python-modules/thingspeak { };
