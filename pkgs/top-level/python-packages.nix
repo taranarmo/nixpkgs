@@ -11663,6 +11663,8 @@ self: super: with self; {
     }
   );
 
+  pinotdb = callPackage ../development/python-modules/pinotdb { };
+
   pins = callPackage ../development/python-modules/pins { };
 
   pint = callPackage ../development/python-modules/pint { };
