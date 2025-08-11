@@ -35,7 +35,6 @@
 
   aiosqlite,
   pydantic,
-  aiologic,
   alembic,
   argcomplete,
   asgiref,
@@ -256,7 +255,6 @@ let
     ];
 
     dependencies = [
-      aiologic
       fsspec
       httpx
       jinja2
