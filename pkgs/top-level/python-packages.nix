@@ -7842,6 +7842,8 @@ self: super: with self; {
 
   kuzu = callPackage ../development/python-modules/kuzu { };
 
+  kylinpy = callPackage ../development/python-modules/kylinpy { };
+
   l18n = callPackage ../development/python-modules/l18n { };
 
   labelbox = callPackage ../development/python-modules/labelbox { };
