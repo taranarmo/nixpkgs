@@ -6978,6 +6978,8 @@ self: super: with self; {
 
   impacket = callPackage ../development/python-modules/impacket { };
 
+  impyla = callPackage ../development/python-modules/impyla { };
+
   import-expression = callPackage ../development/python-modules/import-expression { };
 
   importlab = callPackage ../development/python-modules/importlab { };
