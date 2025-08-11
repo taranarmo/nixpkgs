@@ -590,6 +590,24 @@ self: super: with self; {
 
   alembic = callPackage ../development/python-modules/alembic { };
 
+  alibabacloud-adb20211201 = callPackage ../development/python-modules/alibabacloud-adb20211201 { };
+
+  alibabacloud-credentials = callPackage ../development/python-modules/alibabacloud-credentials { };
+
+  alibabacloud-credentials-api = callPackage ../development/python-modules/alibabacloud-credentials-api { };
+
+  alibabacloud-tea = callPackage ../development/python-modules/alibabacloud-tea { };
+
+  alibabacloud-gateway-spi = callPackage ../development/python-modules/alibabacloud-gateway-spi { };
+
+  alibabacloud-tea-xml = callPackage ../development/python-modules/alibabacloud-tea-xml { };
+
+  alibabacloud-openapi-util = callPackage ../development/python-modules/alibabacloud-openapi-util { };
+
+  alibabacloud-tea-openapi = callPackage ../development/python-modules/alibabacloud-tea-openapi { };
+
+  alibabacloud-tea-util = callPackage ../development/python-modules/alibabacloud-tea-util { };
+
   alexapy = callPackage ../development/python-modules/alexapy { };
 
   algebraic-data-types = callPackage ../development/python-modules/algebraic-data-types { };
@@ -17182,6 +17200,8 @@ self: super: with self; {
   sqlalchemy-cockroachdb = callPackage ../development/python-modules/sqlalchemy-cockroachdb { };
 
   sqlalchemy-continuum = callPackage ../development/python-modules/sqlalchemy-continuum { };
+
+  sqlalchemy-drill = callPackage ../development/python-modules/sqlalchemy-drill { };
 
   sqlalchemy-file = callPackage ../development/python-modules/sqlalchemy-file { };
 
