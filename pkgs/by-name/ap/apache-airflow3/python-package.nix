@@ -106,7 +106,6 @@ let
     "common_io"
     "common_sql"
     "smtp"
-    "sqlite"
     "standard"
   ];
 
