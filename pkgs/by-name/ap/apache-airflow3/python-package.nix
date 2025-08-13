@@ -1,6 +1,5 @@
 {
   lib,
-  stdenv,
   python,
   buildPythonPackage,
   buildPythonApplication,
@@ -153,7 +152,7 @@ let
     doCheck = false;
 
     postPatch = ''
-      # remove cyclic dep
+      # remove cyclic dependency
       substituteInPlace airflow-core/pyproject.toml \
         --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' '
     '';
@@ -171,31 +170,6 @@ let
     ];
 
     dependencies = [
-      marshmallow-oneofschema
-      methodtools
-      opentelemetry-api
-      opentelemetry-exporter-otlp
-      pendulum
-      psutil
-      pydantic
-      pygments
-      pyjwt
-      python-daemon
-      python-dateutil
-      python-slugify
-      requests
-      rich-argparse
-      rich
-      setproctitle
-      sqlalchemy-jsonfield
-      sqlalchemy-utils
-      sqlalchemy
-      svcs
-      tabulate
-      tenacity
-      termcolor
-      universal-pathlib
-      uuid6
       a2wsgi
       aiosqlite
       alembic
@@ -223,6 +197,7 @@ let
       opentelemetry-exporter-otlp
       pendulum
       psutil
+      pydantic
       pygments
       pyjwt
       python-daemon
@@ -231,8 +206,8 @@ let
       requests
       requests-toolbelt
       rfc3339-validator
-      rich-argparse
       rich
+      rich-argparse
       setproctitle
       sqlalchemy
       sqlalchemy-jsonfield
@@ -253,12 +228,10 @@ let
     version = "1.0.0"; # Replace with the actual version if needed
     src = "${airflow-src}/task-sdk";
     pyproject = true;
-    build-system = [
-      hatchling
-      attrs
-    ];
+    build-system = [ hatchling attrs ];
 
     dependencies = [
+      airflowCore
       fsspec
       httpx
       jinja2
@@ -269,7 +242,6 @@ let
       python-dateutil
       retryhttp
       structlog
-      airflowCore
     ];
   };
 
@@ -370,17 +342,6 @@ buildPythonApplication {
   ]
   ++ providerPackages;
 
-  pythonRelaxDeps = [
-    "colorlog"
-    "flask-appbuilder"
-    "opentelemetry-api"
-    "pathspec"
-  ];
-
-  makeWrapperArgs = [
-    "--prefix PYTHONPATH : $PYTHONPATH"
-  ];
-
   pythonImportsCheck = [
     "airflow"
   ]
@@ -395,14 +356,6 @@ buildPythonApplication {
     airflow version
     airflow db reset -y
   '';
-
-  pytestFlagsArray = [
-    "tests/core/test_core.py"
-  ];
-
-  disabledTests = lib.optionals stdenv.hostPlatform.isDarwin [
-    "bash_operator_kill" # psutil.AccessDenied
-  ];
 
   passthru = {
     updateScript = ./update.sh;
