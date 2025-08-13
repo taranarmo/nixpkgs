@@ -8,52 +8,6 @@ let
   python = python3.override {
     self = python;
     packageOverrides = pySelf: pySuper: {
-      connexion = pySuper.connexion.overridePythonAttrs (o: rec {
-        version = "2.14.2";
-        src = fetchFromGitHub {
-          owner = "spec-first";
-          repo = "connexion";
-          rev = "refs/tags/${version}";
-          hash = "sha256-1v1xCHY3ZnZG/Vu9wN/it7rLKC/StoDefoMNs+hMjIs=";
-        };
-        nativeBuildInputs = with pySelf; [
-          setuptools
-        ];
-        pythonRelaxDeps = [
-          "werkzeug"
-        ];
-        propagatedBuildInputs = with pySelf; [
-          aiohttp
-          aiohttp-jinja2
-          aiohttp-swagger
-          clickclick
-          flask
-          inflection
-          jsonschema
-          openapi-spec-validator
-          packaging
-          pyyaml
-          requests
-          swagger-ui-bundle
-        ];
-        nativeCheckInputs = with pySelf; [
-          aiohttp-remotes
-          decorator
-          pytest-aiohttp
-          pytestCheckHook
-          testfixtures
-        ];
-        disabledTests = [
-          "test_app"
-          "test_invalid_type"
-          "test_openapi_yaml_behind_proxy"
-          "test_swagger_ui"
-        ];
-        postPatch = ''
-          substituteInPlace connexion/__init__.py \
-            --replace-fail "2020.0.dev1" "${version}"
-        '';
-      });
       werkzeug = pySuper.werkzeug.overridePythonAttrs (o: rec {
         version = "2.3.8";
         src = fetchPypi {
@@ -111,10 +65,6 @@ let
         disabledTestPaths = [ ];
         preCheck = "";
         postCheck = "";
-      });
-      kerberos = pySuper.kerberos.overridePythonAttrs (o: {
-        meta.broken = false;
-        pythonImportsCheck = [ ];
       });
       ## flask-appbuilder doesn't work with sqlalchemy 2.x, flask-appbuilder 3.x
       ## https://github.com/dpgaspar/Flask-AppBuilder/issues/2038
@@ -224,32 +174,10 @@ let
           hash = "sha256-fKfIp6duLNMURoxnfGnRLMI1dxH8q0pg+HmUwVieXLU=";
         };
       });
-      rich = pySuper.rich.overridePythonAttrs (o: rec {
-        version = "13.9.4";
-        src = fetchPypi {
-          pname = "rich";
-          inherit version;
-          hash = "sha256-Q5WUl4pJoJUwz/frxLXHED71e69I1eoxhPIdmivvoJg=";
-        };
-        nativeBuildInputs = with pySelf; [
-          setuptools
-        ];
-        doCheck = false;
-      });
-      pyproject-api = pySuper.pyproject-api.overridePythonAttrs (o: rec {
-        version = "1.8.0";
-        src = fetchPypi {
-          pname = "pyproject_api";
-          inherit version;
-          hash = "sha256-d7gEny/rXTPu/MIbV/HieWNid6isita1hxA3skN3hJY=";
-        };
-      });
       apache-airflow3 = pySelf.callPackage ./python-package.nix { };
     };
   };
 in
-# See note in ./python-package.nix for
-# instructions on manually testing the web UI
 with python.pkgs;
 apache-airflow3.overrideAttrs (previousAttrs: {
   # Provide access to airflow's modified python package set
