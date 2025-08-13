@@ -148,7 +148,6 @@ let
     inherit version;
     src = airflow-src;
     preBuild = "cd airflow-core";
-    build-system = [ hatchling ];
     pyproject = true;
 
     doCheck = false;
@@ -159,11 +158,19 @@ let
         --replace-fail '"apache-airflow-task-sdk<1.1.0,>=1.0.3",' ' '
     '';
 
-    dependencies = [
-      gitpython
-      pluggy
+    build-system = [
       gitdb
+      gitpython
+      hatchling
+      packaging
+      pathspec
+      pluggy
       smmap
+      tomli
+      trove-classifiers
+    ];
+
+    dependencies = [
       marshmallow-oneofschema
       methodtools
       opentelemetry-api
@@ -234,8 +241,6 @@ let
       tabulate
       tenacity
       termcolor
-      tomli
-      trove-classifiers
       universal-pathlib
       uuid6
       werkzeug
@@ -274,11 +279,8 @@ buildPythonApplication {
   inherit version;
   src = airflow-src;
   pyproject = true;
-  build-system = [ hatchling ];
 
   postInstall = ''
-    # Remove the default airflow.cfg file
-    #rm -f $out/airflow.cfg
     # Create a symlink to the airflow-core package
     mkdir -p $out/bin
     ln -s ${airflowCore}/bin/airflow $out/bin/airflow
@@ -286,34 +288,27 @@ buildPythonApplication {
 
   nativeBuildInputs = [ writableTmpDirAsHomeHook ];
 
-  dependencies = [
-    cadwyn
-    svcs
-    taskSdk
-    pandas
-    uvicorn
-  ]
-  ++ providerPackages;
-
-  propagatedBuildInputs = [
-    gitpython
+  build-system = [
     gitdb
+    gitpython
+    hatchling
     packaging
     pathspec
     pluggy
     smmap
     tomli
     trove-classifiers
-    sqlalchemy-utils
-    fastapi
-    libcst
+  ];
+
+  dependencies = [
     a2wsgi
-    uuid6
+    airflowCore
     alembic
     argcomplete
     asgiref
     attrs
     blinker
+    cadwyn
     colorlog
     configupdater
     connexion
@@ -322,10 +317,11 @@ buildPythonApplication {
     cryptography
     deprecated
     dill
+    fastapi
+    flask
     flask-caching
     flask-session
     flask-wtf
-    flask
     fsspec
     google-re2
     gunicorn
@@ -334,6 +330,7 @@ buildPythonApplication {
     jinja2
     jsonschema
     lazy-object-proxy
+    libcst
     linkify-it-py
     lockfile
     markdown-it-py
@@ -343,6 +340,7 @@ buildPythonApplication {
     methodtools
     opentelemetry-api
     opentelemetry-exporter-otlp
+    pandas
     pendulum
     psutil
     pygments
@@ -354,18 +352,23 @@ buildPythonApplication {
     requests
     requests-toolbelt
     rfc3339-validator
-    rich-argparse
     rich
+    rich-argparse
     setproctitle
     sqlalchemy
     sqlalchemy-jsonfield
+    sqlalchemy-utils
+    svcs
     tabulate
+    taskSdk
     tenacity
     termcolor
     universal-pathlib
+    uuid6
+    uvicorn
     werkzeug
-    airflowCore
-  ];
+  ]
+  ++ providerPackages;
 
   pythonRelaxDeps = [
     "colorlog"
