@@ -413,10 +413,6 @@ buildPythonApplication {
     description = "Programmatically author, schedule and monitor data pipelines";
     homepage = "https://airflow.apache.org/";
     license = licenses.asl20;
-    maintainers = with maintainers; [
-      bhipple
-      gbpdt
-      ingenieroariel
-    ];
+    maintainers = with maintainers; [ taranarmo ];
   };
 }
