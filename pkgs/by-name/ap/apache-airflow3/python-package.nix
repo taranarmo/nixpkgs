@@ -410,7 +410,7 @@ buildPythonApplication {
   };
 
   meta = with lib; {
-    description = "Programmatically author, schedule and monitor data pipelines";
+    description = "Platform to programmatically author, schedule and monitor workflows";
     homepage = "https://airflow.apache.org/";
     license = licenses.asl20;
     maintainers = with maintainers; [ taranarmo ];
