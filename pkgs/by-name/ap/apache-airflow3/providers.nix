@@ -5,7 +5,7 @@
     imports = [ "airflow.providers.airbyte.get_provider_info" ];
   };
   alibaba = {
-    deps = [ "alibabacloud-adb20211201" "alibabacloud-tea-openapi" "oss2" ];
+    deps = [ "oss2" ];
     imports = [ "airflow.providers.alibaba.get_provider_info" ];
   };
   amazon = {
