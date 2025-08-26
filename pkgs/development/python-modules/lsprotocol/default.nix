@@ -7,14 +7,15 @@
   flit-core,
   importlib-resources,
   jsonschema,
+  nox,
   pyhamcrest,
-  pytestCheckHook,
+  pytest,
   pythonOlder,
 }:
 
 buildPythonPackage rec {
   pname = "lsprotocol";
-  version = "2025.0.0";
+  version = "2023.0.1";
   pyproject = true;
 
   disabled = pythonOlder "3.7";
@@ -23,23 +24,20 @@ buildPythonPackage rec {
     owner = "microsoft";
     repo = "lsprotocol";
     tag = version;
-    hash = "sha256-DrWXHMgDZSQQ6vsmorThMrUTX3UQU+DajSEOdxoXrFQ=";
+    hash = "sha256-PHjLKazMaT6W4Lve1xNxm6hEwqE3Lr2m5L7Q03fqb68=";
   };
 
-  postPatch = ''
-    pushd packages/python
-  '';
-
-  build-system = [
+  nativeBuildInputs = [
     flit-core
+    nox
   ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     attrs
     cattrs
   ];
 
-  nativeCheckInputs = [ pytestCheckHook ];
+  nativeCheckInputs = [ pytest ];
 
   checkInputs = [
     importlib-resources
@@ -47,12 +45,21 @@ buildPythonPackage rec {
     pyhamcrest
   ];
 
-  disabledTests = [
-    "test_notebook_sync_options"
-  ];
+  preBuild = ''
+    cd packages/python
+  '';
 
   preCheck = ''
-    popd
+    cd ../../
+  '';
+
+  checkPhase = ''
+    runHook preCheck
+
+    sed -i "/^    _install_requirements/d" noxfile.py
+    nox --session tests
+
+    runHook postCheck
   '';
 
   pythonImportsCheck = [ "lsprotocol" ];
@@ -60,7 +67,7 @@ buildPythonPackage rec {
   meta = with lib; {
     description = "Python implementation of the Language Server Protocol";
     homepage = "https://github.com/microsoft/lsprotocol";
-    changelog = "https://github.com/microsoft/lsprotocol/releases/tag/${src.tag}";
+    changelog = "https://github.com/microsoft/lsprotocol/releases/tag/${version}";
     license = licenses.mit;
     maintainers = with maintainers; [
       doronbehar
