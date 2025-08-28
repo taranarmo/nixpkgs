@@ -15,7 +15,6 @@
   bash,
   zlib,
   ccache,
-  ...
 }:
 
 stdenv.mkDerivation (finalAttrs: {
