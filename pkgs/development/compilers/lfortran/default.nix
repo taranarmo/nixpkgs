@@ -15,6 +15,7 @@
   bash,
   zlib,
   ccache,
+  zstd,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -42,6 +43,8 @@ stdenv.mkDerivation (finalAttrs: {
     llvm
     libclang
     lld
+    (zstd.override { enableStatic = true; })
+    libunwind
   ];
 
   propagatedBuildInputs = [
@@ -55,6 +58,8 @@ stdenv.mkDerivation (finalAttrs: {
     "-DLFORTRAN_BUILD_ALL=ON"
     "-DCMAKE_POLICY_DEFAULT_CMP0074=NEW"
     "-DWITH_ZLIB=no"
+    "-DWITH_LLVM=yes"
+    "-DWITH_STATIC_ZSTD=no"
   ];
 
   # LFortran needs LLVM libraries
