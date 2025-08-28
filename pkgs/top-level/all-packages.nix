@@ -4790,6 +4790,8 @@ with pkgs;
       if stdenv.cc.isClang && stdenv.hostPlatform.isx86_64 then llvmPackages_17.stdenv else stdenv;
   };
 
+  lfortran = callPackage ../development/compilers/lfortran { };
+
   gambit = callPackage ../development/compilers/gambit { };
   gambit-unstable = callPackage ../development/compilers/gambit/unstable.nix { };
   gambit-support = callPackage ../development/compilers/gambit/gambit-support.nix { };
