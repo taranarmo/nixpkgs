@@ -114,6 +114,10 @@ stdenv.mkDerivation (finalAttrs: {
       debug-info = callPackage ./tests/debug-info.nix {
         lfortran = finalAttrs.finalPackage;
       };
+
+      fpm = callPackage ./tests/fpm.nix {
+        lfortran = finalAttrs.finalPackage;
+      };
     };
   };
 
