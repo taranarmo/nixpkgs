@@ -78,7 +78,6 @@ stdenv.mkDerivation (finalAttrs: {
     patchShebangs build0.sh
     substituteInPlace build0.sh \
       --replace-fail "source ci/version.sh" "echo \"${finalAttrs.version}\" > version"
-    echo "${finalAttrs.version}" > version
   '';
 
   preCheck = ''
