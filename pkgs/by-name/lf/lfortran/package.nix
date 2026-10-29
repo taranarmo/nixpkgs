@@ -8,7 +8,6 @@
   pkg-config,
   re2c,
   bison,
-  bash,
   zlib,
   zstd,
   pandoc,
@@ -40,7 +39,6 @@ stdenv.mkDerivation (finalAttrs: {
     python3
     re2c
     bison
-    bash
     pandoc
     ninja
     makeBinaryWrapper
@@ -72,8 +70,8 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.cmakeFeature "CMAKE_INSTALL_LIBDIR" "share/lfortran/lib")
     # Since v0.68.0 CMake runs build0.sh via a POSIX shell found as an
     # executable named `shell` (LFortran's cross-platform Pixi env). Instead of
-    # packaging that, reuse bash via the same interpreter-facing variable.
-    (lib.cmakeFeature "LFORTRAN_SHELL" (lib.getExe bash))
+    # packaging that, reuse the build platform's bash via the same variable.
+    (lib.cmakeFeature "LFORTRAN_SHELL" stdenv.shell)
   ];
 
   postPatch = ''
