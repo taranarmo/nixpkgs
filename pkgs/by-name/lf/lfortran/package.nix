@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "lfortran";
     repo = "lfortran";
-    rev = "v${finalAttrs.version}";
+    tag = "v${finalAttrs.version}";
     hash = "sha256-hwHN/80plK72l3K+C4uI+q8gnu0OAnMLESU3HA4I8VQ=";
   };
 
