@@ -1,4 +1,5 @@
 {
+  lib,
   stdenv,
   cmake,
   ninja,
@@ -11,6 +12,22 @@
 stdenv.mkDerivation {
   name = "${lfortran.pname}-test-integration";
   inherit (lfortran) src;
+
+  __structuredAttrs = true;
+
+  # Tests known to fail per platform. Upstream CI doesn't cover aarch64-linux,
+  # where mostly real(16)/long double tests crash.
+  excludedTests = (lib.importJSON ./integration-excluded.json).${stdenv.hostPlatform.system} or [ ];
+
+  # Drop each excluded test's RUN() call, which may span several lines, so it
+  # is neither built nor run.
+  postPatch = ''
+    for test in "''${excludedTests[@]}"; do
+      grep -q "^RUN(NAME $test[ )]" integration_tests/CMakeLists.txt \
+        || { echo "excluded test $test not found" >&2; exit 1; }
+      sed -i "/^RUN(NAME $test[ )]/{:a;/)/!{N;ba;};d;}" integration_tests/CMakeLists.txt
+    done
+  '';
 
   nativeBuildInputs = [
     lfortran
@@ -37,8 +54,4 @@ stdenv.mkDerivation {
   '';
 
   requiredSystemFeatures = [ "big-parallel" ];
-
-  # Upstream CI doesn't cover aarch64-linux. With 0.68.0 about 40 of 5400
-  # tests fail there, mostly real(16)/long double ones that crash.
-  meta.badPlatforms = [ "aarch64-linux" ];
 }
