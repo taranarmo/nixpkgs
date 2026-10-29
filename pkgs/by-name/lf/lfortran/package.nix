@@ -99,6 +99,8 @@ stdenv.mkDerivation (finalAttrs: {
       }
   '';
 
+  setupHook = ./setup-hook.sh;
+
   passthru = {
     updateScript = nix-update-script { };
 
