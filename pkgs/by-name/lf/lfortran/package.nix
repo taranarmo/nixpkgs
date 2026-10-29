@@ -128,8 +128,6 @@ stdenv.mkDerivation (finalAttrs: {
     license = lib.licenses.bsd3;
     maintainers = with lib.maintainers; [ taranarmo ];
     mainProgram = "lfortran";
-    # https://github.com/lfortran/lfortran/issues/8643
-    badPlatforms = [ "aarch64-linux" ];
     platforms = lib.platforms.unix;
   };
 })
