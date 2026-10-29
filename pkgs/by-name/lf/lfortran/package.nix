@@ -122,6 +122,10 @@ stdenv.mkDerivation (finalAttrs: {
       integration = callPackage ./tests/integration.nix {
         lfortran = finalAttrs.finalPackage;
       };
+
+      toml-f = callPackage ./tests/toml-f.nix {
+        lfortran = finalAttrs.finalPackage;
+      };
     };
   };
 
