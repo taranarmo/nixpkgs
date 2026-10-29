@@ -4,7 +4,7 @@
   fetchFromGitHub,
   cmake,
   python3,
-  llvmPackages_19,
+  llvmPackages,
   pkg-config,
   re2c,
   bison,
@@ -49,8 +49,8 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
-    llvmPackages_19.llvm
-    llvmPackages_19.libunwind
+    llvmPackages.llvm
+    llvmPackages.libunwind
     zstd
     zlib
   ];
@@ -88,7 +88,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   postInstall = ''
     wrapProgram $out/bin/lfortran \
-      --prefix PATH : ${lib.makeBinPath [ llvmPackages_19.clang ]}
+      --prefix PATH : ${lib.makeBinPath [ llvmPackages.clang ]}
   '';
 
   passthru = {
