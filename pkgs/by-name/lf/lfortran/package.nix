@@ -13,7 +13,7 @@
   pandoc,
   ninja,
   makeBinaryWrapper,
-  runCommand,
+  callPackage,
   nix-update-script,
   testers,
 }:
@@ -99,21 +99,9 @@ stdenv.mkDerivation (finalAttrs: {
         package = finalAttrs.finalPackage;
       };
 
-      compile-and-run =
-        runCommand "${finalAttrs.pname}-test-compile"
-          {
-            nativeBuildInputs = [ finalAttrs.finalPackage ];
-          }
-          ''
-            cat << 'EOF' > hello.f90
-            program hello
-              print *, "Hello from LFortran!"
-            end program hello
-            EOF
-            lfortran hello.f90 -o hello
-            ./hello | grep -F "Hello from LFortran!"
-            touch $out
-          '';
+      compile-and-run = callPackage ./tests/compile-and-run.nix {
+        lfortran = finalAttrs.finalPackage;
+      };
     };
   };
 
