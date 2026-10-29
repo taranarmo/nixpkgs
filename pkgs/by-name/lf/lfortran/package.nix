@@ -118,6 +118,10 @@ stdenv.mkDerivation (finalAttrs: {
       fpm = callPackage ./tests/fpm.nix {
         lfortran = finalAttrs.finalPackage;
       };
+
+      integration = callPackage ./tests/integration.nix {
+        lfortran = finalAttrs.finalPackage;
+      };
     };
   };
 
