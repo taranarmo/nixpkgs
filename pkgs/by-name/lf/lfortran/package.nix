@@ -53,6 +53,8 @@ stdenv.mkDerivation (finalAttrs: {
     llvmPackages.libunwind
     zstd
     zlib
+    # For the shebangs of the DWARF scripts that `lfortran -g` runs.
+    python3
   ];
 
   cmakeFlags = [
@@ -86,9 +88,15 @@ stdenv.mkDerivation (finalAttrs: {
 
   doCheck = true;
 
+  # clang links executables; `-g` runs llvm-dwarfdump (and dsymutil on Darwin).
   postInstall = ''
     wrapProgram $out/bin/lfortran \
-      --prefix PATH : ${lib.makeBinPath [ llvmPackages.clang ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          llvmPackages.clang
+          llvmPackages.llvm
+        ]
+      }
   '';
 
   passthru = {
@@ -100,6 +108,10 @@ stdenv.mkDerivation (finalAttrs: {
       };
 
       compile-and-run = callPackage ./tests/compile-and-run.nix {
+        lfortran = finalAttrs.finalPackage;
+      };
+
+      debug-info = callPackage ./tests/debug-info.nix {
         lfortran = finalAttrs.finalPackage;
       };
     };
